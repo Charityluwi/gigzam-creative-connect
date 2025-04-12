@@ -1,3 +1,4 @@
+
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NavBar from "@/components/NavBar";
@@ -131,13 +132,13 @@ const Search = () => {
     setTimeout(() => {
       let filteredTalents = [...mockTalents];
       
-      if (category) {
+      if (category && category !== "all-categories") {
         filteredTalents = filteredTalents.filter(
           (talent) => talent.category === category
         );
       }
       
-      if (location) {
+      if (location && location !== "all-locations") {
         filteredTalents = filteredTalents.filter(
           (talent) => talent.location === location.toLowerCase()
         );
@@ -162,7 +163,7 @@ const Search = () => {
 
   const updateFilters = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams.toString());
-    if (value) {
+    if (value && value !== "all-categories" && value !== "all-locations") {
       newParams.set(key, value);
     } else {
       newParams.delete(key);
@@ -184,7 +185,7 @@ const Search = () => {
     setPriceRange(value);
   };
 
-  const categoryName = category 
+  const categoryName = category && category !== "all-categories"
     ? talentCategories.find(c => c.id === category)?.name 
     : "All Categories";
 
