@@ -4,19 +4,19 @@ import { Link } from "react-router-dom";
 
 const categories = [
   {
-    id: "musicians",
+    id: "musician",
     name: "Musicians",
     icon: Music,
     color: "bg-blue-100 text-blue-600",
   },
   {
-    id: "mcs",
+    id: "mc",
     name: "MCs",
     icon: Mic,
     color: "bg-purple-100 text-purple-600",
   },
   {
-    id: "photographers",
+    id: "photographer",
     name: "Photographers",
     icon: Camera,
     color: "bg-green-100 text-green-600",
@@ -28,19 +28,19 @@ const categories = [
     color: "bg-pink-100 text-pink-600",
   },
   {
-    id: "venues",
+    id: "venue",
     name: "Venues",
     icon: Home,
     color: "bg-amber-100 text-amber-600",
   },
   {
-    id: "djs",
+    id: "dj",
     name: "DJs",
     icon: Headphones,
     color: "bg-red-100 text-red-600",
   },
   {
-    id: "hairstylists",
+    id: "hair",
     name: "Hair Stylists",
     icon: Scissors,
     color: "bg-teal-100 text-teal-600",
@@ -70,7 +70,7 @@ const CategorySection = () => {
           {categories.map((category) => (
             <Link
               key={category.id}
-              to={`/category/${category.id}`}
+              to={`/search?category=${category.id}`}
               className="group flex flex-col items-center p-4 rounded-xl transition-all duration-300 hover:shadow-md bg-white border border-gray-100 hover:border-gigzam-purple/20"
             >
               <div className={`p-3 rounded-full ${category.color} group-hover:scale-110 transition-transform`}>

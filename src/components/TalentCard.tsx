@@ -47,6 +47,7 @@ const TalentCard = ({
 
   const displayImage = imageUrl || image;
   const displayReviews = totalReviews || reviews;
+  const displayCategory = profession || category;
   const numericPrice = startingPrice || (price ? parseInt(price.replace(/\D/g, '')) : 0);
 
   return (
@@ -87,7 +88,7 @@ const TalentCard = ({
                   <span className="inline-block ml-1 text-gigzam-purple">✓</span>
                 )}
               </h3>
-              <p className="text-sm text-gray-600">{profession || category}</p>
+              <p className="text-sm text-gray-600">{displayCategory}</p>
             </div>
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-500 mr-1" fill="#F59E0B" />

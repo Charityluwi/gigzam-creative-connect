@@ -86,6 +86,46 @@ const mockTalents = [
     price: 3500,
     image: "https://images.unsplash.com/photo-1478146059778-26028b07395a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1174&q=80",
   },
+  {
+    id: 7,
+    name: "Sarah Mulenga",
+    category: "hair",
+    location: "lusaka",
+    rating: 4.8,
+    reviews: 42,
+    price: 1700,
+    image: "https://images.unsplash.com/photo-1562322140-8baeececf3df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80",
+  },
+  {
+    id: 8,
+    name: "Bright Events",
+    category: "venue",
+    location: "kitwe",
+    rating: 4.6,
+    reviews: 30,
+    price: 5000,
+    image: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1098&q=80",
+  },
+  {
+    id: 9,
+    name: "Nail Art by Mercy",
+    category: "nail",
+    location: "ndola",
+    rating: 4.7,
+    reviews: 35,
+    price: 800,
+    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+  },
+  {
+    id: 10,
+    name: "Joseph Fashions",
+    category: "designer",
+    location: "lusaka",
+    rating: 4.9,
+    reviews: 50,
+    price: 3000,
+    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+  },
 ];
 
 const talentCategories = [
@@ -122,8 +162,8 @@ const Search = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const category = searchParams.get("category") || "";
-  const location = searchParams.get("location") || "";
+  const category = searchParams.get("category") || "all-categories";
+  const location = searchParams.get("location") || "all-locations";
   const dateParam = searchParams.get("date");
   const date = dateParam ? parse(dateParam, "yyyy-MM-dd", new Date()) : undefined;
 
@@ -196,7 +236,7 @@ const Search = () => {
         <div className="bg-gigzam-purple-dark text-white py-6">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl font-bold mb-4">
-              {talents.length} {categoryName} found {location ? `in ${location}` : ""} 
+              {talents.length} {categoryName} found {location !== "all-locations" ? `in ${location}` : ""} 
               {date ? ` for ${format(date, "PPP")}` : ""}
             </h1>
             
