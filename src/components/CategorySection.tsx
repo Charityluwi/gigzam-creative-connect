@@ -1,5 +1,20 @@
 
-import { Music, Mic, Camera, Palette, Home, Headphones, Scissors, Brush } from "lucide-react";
+import { 
+  Music, 
+  Mic, 
+  Camera, 
+  Palette, 
+  Home, 
+  Headphones, 
+  Scissors, 
+  Brush,
+  ChefHat,
+  HeadphonesIcon,
+  Car,
+  Flower,
+  Users,
+  Cake
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const categories = [
@@ -51,6 +66,48 @@ const categories = [
     icon: Palette,
     color: "bg-orange-100 text-orange-600",
   },
+  {
+    id: "caterer",
+    name: "Caterers",
+    icon: ChefHat,
+    color: "bg-yellow-100 text-yellow-600",
+  },
+  {
+    id: "sound",
+    name: "Sound Engineers",
+    icon: HeadphonesIcon,
+    color: "bg-indigo-100 text-indigo-600",
+  },
+  {
+    id: "dancer",
+    name: "Dancers",
+    icon: Music, // Using Music as a stand-in for dancer
+    color: "bg-purple-100 text-purple-600",
+  },
+  {
+    id: "car",
+    name: "Car Hire",
+    icon: Car,
+    color: "bg-gray-100 text-gray-600",
+  },
+  {
+    id: "florist",
+    name: "Florists",
+    icon: Flower,
+    color: "bg-rose-100 text-rose-600",
+  },
+  {
+    id: "matron",
+    name: "Matrons",
+    icon: Users,
+    color: "bg-sky-100 text-sky-600",
+  },
+  {
+    id: "baker",
+    name: "Bakers",
+    icon: Cake,
+    color: "bg-brown-100 text-amber-800",
+  },
 ];
 
 const CategorySection = () => {
@@ -66,7 +123,7 @@ const CategorySection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {categories.map((category) => (
             <Link
               key={category.id}

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -6,9 +5,26 @@ import Footer from "@/components/Footer";
 import TalentCard from "@/components/TalentCard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Music, Mic, Camera, Palette, Home, Headphones, Scissors, Brush, Heart, Star, Filter } from "lucide-react";
+import { 
+  Music, 
+  Mic, 
+  Camera, 
+  Palette, 
+  Home, 
+  Headphones, 
+  Scissors, 
+  Brush, 
+  Heart, 
+  Star, 
+  Filter,
+  ChefHat,
+  HeadphonesIcon,
+  Car,
+  Flower,
+  Users,
+  Cake
+} from "lucide-react";
 
-// Use the same mock talents data from Search.tsx
 const mockTalents = [
   {
     id: 1,
@@ -132,7 +148,6 @@ const mockTalents = [
   },
 ];
 
-// Use the same categories from CategorySection.tsx
 const categories = [
   {
     id: "musician",
@@ -182,6 +197,48 @@ const categories = [
     icon: Palette,
     color: "bg-orange-100 text-orange-600",
   },
+  {
+    id: "caterer",
+    name: "Caterers",
+    icon: ChefHat,
+    color: "bg-yellow-100 text-yellow-600",
+  },
+  {
+    id: "sound",
+    name: "Sound Engineers",
+    icon: HeadphonesIcon,
+    color: "bg-indigo-100 text-indigo-600",
+  },
+  {
+    id: "dancer",
+    name: "Dancers",
+    icon: Music,
+    color: "bg-purple-100 text-purple-600",
+  },
+  {
+    id: "car",
+    name: "Car Hire",
+    icon: Car,
+    color: "bg-gray-100 text-gray-600",
+  },
+  {
+    id: "florist",
+    name: "Florists",
+    icon: Flower,
+    color: "bg-rose-100 text-rose-600",
+  },
+  {
+    id: "matron",
+    name: "Matrons",
+    icon: Users,
+    color: "bg-sky-100 text-sky-600",
+  },
+  {
+    id: "baker",
+    name: "Bakers",
+    icon: Cake,
+    color: "bg-brown-100 text-amber-800",
+  },
 ];
 
 const Discover = () => {
@@ -190,14 +247,12 @@ const Discover = () => {
   
   const categoryParam = searchParams.get("category");
   
-  // Initialize with the category from URL if available
   useState(() => {
     if (categoryParam) {
       setActiveTab(categoryParam);
     }
   });
   
-  // Filter talents based on the active tab
   const filteredTalents = activeTab === "all" 
     ? mockTalents 
     : activeTab === "featured" 
