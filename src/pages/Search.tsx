@@ -1,4 +1,3 @@
-
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NavBar from "@/components/NavBar";
@@ -25,7 +24,6 @@ import {
   SliderThumb,
 } from "@/components/ui/slider";
 
-// Mock data for demonstration
 const mockTalents = [
   {
     id: 1,
@@ -123,17 +121,14 @@ const Search = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  // Get initial search parameters
   const category = searchParams.get("category") || "";
   const location = searchParams.get("location") || "";
   const dateParam = searchParams.get("date");
   const date = dateParam ? parse(dateParam, "yyyy-MM-dd", new Date()) : undefined;
 
   useEffect(() => {
-    // Simulate API call with loading state
     setLoading(true);
     setTimeout(() => {
-      // Filter talents based on search parameters
       let filteredTalents = [...mockTalents];
       
       if (category) {
@@ -148,12 +143,10 @@ const Search = () => {
         );
       }
       
-      // Price filter
       filteredTalents = filteredTalents.filter(
         (talent) => talent.price >= priceRange[0] && talent.price <= priceRange[1]
       );
       
-      // Sorting
       if (sortBy === "price_low") {
         filteredTalents.sort((a, b) => a.price - b.price);
       } else if (sortBy === "price_high") {
@@ -199,7 +192,6 @@ const Search = () => {
     <div className="min-h-screen flex flex-col">
       <NavBar />
       <main className="flex-grow pt-16">
-        {/* Search header */}
         <div className="bg-gigzam-purple-dark text-white py-6">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl font-bold mb-4">
@@ -314,7 +306,6 @@ const Search = () => {
           </div>
         </div>
         
-        {/* Results */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {loading ? (
             <div className="flex justify-center items-center py-20">
@@ -326,10 +317,12 @@ const Search = () => {
               {talents.map((talent) => (
                 <TalentCard 
                   key={talent.id}
+                  id={talent.id.toString()}
                   name={talent.name}
                   category={talentCategories.find(c => c.id === talent.category)?.name || talent.category}
                   location={locations.find(l => l.toLowerCase() === talent.location) || talent.location}
                   rating={talent.rating}
+                  reviews={talent.reviews}
                   price={`K${talent.price}`}
                   imageUrl={talent.image}
                 />

@@ -69,7 +69,7 @@ const mockTalent = {
       thumbnail: "https://images.unsplash.com/photo-1565310105094-0a2a52c88401?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80"
     }
   ],
-  reviews: [
+  reviewList: [
     {
       id: 1,
       user: "Janet Banda",
@@ -361,7 +361,7 @@ const TalentProfile = () => {
                     
                     {/* Review list */}
                     <div className="space-y-6">
-                      {talent.reviews.map((review) => (
+                      {talent.reviewList.map((review) => (
                         <div key={review.id} className="pb-6 border-b border-gray-200 last:border-0">
                           <div className="flex justify-between">
                             <div>

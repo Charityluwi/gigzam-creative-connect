@@ -1,32 +1,40 @@
 
 import { useState } from "react";
-import { Star, Heart, MapPin, Calendar, CheckCircle } from "lucide-react";
+import { Star, Heart, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface TalentCardProps {
-  id: string;
+  id?: string;
   name: string;
-  profession: string;
-  image: string;
+  category?: string;
+  profession?: string;
+  imageUrl?: string;
+  image?: string;
   rating: number;
-  totalReviews: number;
+  totalReviews?: number;
+  reviews?: number;
   location: string;
-  startingPrice: number;
-  verified: boolean;
+  startingPrice?: number;
+  price?: string;
+  verified?: boolean;
   featured?: boolean;
 }
 
 const TalentCard = ({
-  id,
+  id = "1",
   name,
   profession,
+  category,
   image,
+  imageUrl,
   rating,
-  totalReviews,
+  totalReviews = 0,
+  reviews = 0,
   location,
-  startingPrice,
-  verified,
+  startingPrice = 0,
+  price,
+  verified = false,
   featured = false,
 }: TalentCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
@@ -36,6 +44,10 @@ const TalentCard = ({
     e.stopPropagation();
     setIsFavorite(!isFavorite);
   };
+
+  const displayImage = imageUrl || image;
+  const displayReviews = totalReviews || reviews;
+  const numericPrice = startingPrice || (price ? parseInt(price.replace(/\D/g, '')) : 0);
 
   return (
     <Link to={`/talent/${id}`}>
@@ -52,7 +64,7 @@ const TalentCard = ({
         )}
         <div className="relative overflow-hidden h-48">
           <img
-            src={image}
+            src={displayImage}
             alt={name}
             className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-110"
           />
@@ -72,15 +84,15 @@ const TalentCard = ({
               <h3 className="text-lg font-semibold text-gray-900 group-hover:text-gigzam-purple transition-colors">
                 {name}
                 {verified && (
-                  <CheckCircle className="inline-block ml-1 h-4 w-4 text-gigzam-purple" />
+                  <span className="inline-block ml-1 text-gigzam-purple">✓</span>
                 )}
               </h3>
-              <p className="text-sm text-gray-600">{profession}</p>
+              <p className="text-sm text-gray-600">{profession || category}</p>
             </div>
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-500 mr-1" fill="#F59E0B" />
               <span className="text-sm font-medium">{rating.toFixed(1)}</span>
-              <span className="text-xs text-gray-500 ml-1">({totalReviews})</span>
+              <span className="text-xs text-gray-500 ml-1">({displayReviews})</span>
             </div>
           </div>
           <div className="mt-3 flex items-center text-sm text-gray-600">
@@ -90,7 +102,9 @@ const TalentCard = ({
           <div className="mt-4 flex justify-between items-center">
             <div>
               <span className="text-xs text-gray-500">Starting from</span>
-              <p className="text-gigzam-purple font-bold">K{startingPrice.toLocaleString()}</p>
+              <p className="text-gigzam-purple font-bold">
+                {price || `K${numericPrice.toLocaleString()}`}
+              </p>
             </div>
             <button className="text-sm font-medium text-gigzam-purple hover:text-gigzam-purple-dark">
               View Profile
