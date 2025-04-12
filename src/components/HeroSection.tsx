@@ -2,11 +2,60 @@
 import { useState } from "react";
 import { Search, MapPin, Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useNavigate } from "react-router-dom";
+
+const talentCategories = [
+  { id: "musician", name: "Musician" },
+  { id: "dj", name: "DJ" },
+  { id: "photographer", name: "Photographer" },
+  { id: "makeup", name: "Makeup Artist" },
+  { id: "mc", name: "MC/Host" },
+  { id: "hair", name: "Hair Stylist" },
+  { id: "nail", name: "Nail Technician" },
+  { id: "designer", name: "Designer" },
+  { id: "venue", name: "Venue" },
+  { id: "decor", name: "Decor" },
+];
+
+const locations = [
+  "Lusaka",
+  "Kitwe",
+  "Ndola",
+  "Kabwe",
+  "Livingstone",
+  "Chipata",
+  "Chingola",
+  "Mufulira",
+  "Luanshya",
+  "Kasama",
+];
 
 const HeroSection = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const navigate = useNavigate();
+
+  const handleSearch = () => {
+    const searchParams = new URLSearchParams();
+    if (selectedCategory) searchParams.append("category", selectedCategory);
+    if (selectedLocation) searchParams.append("location", selectedLocation);
+    if (date) searchParams.append("date", format(date, "yyyy-MM-dd"));
+    
+    navigate(`/search?${searchParams.toString()}`);
+  };
 
   return (
     <div className="relative min-h-[600px] flex items-center african-pattern overflow-hidden clip-path-slant">
@@ -23,38 +72,72 @@ const HeroSection = () => {
           <div className="bg-white rounded-xl shadow-xl p-4 max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: "0.4s" }}>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="What talent do you need?"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gigzam-purple focus:border-transparent"
-                />
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full pl-9 text-left h-[42px]">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <SelectValue placeholder="What talent do you need?" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[300px]">
+                    <SelectGroup>
+                      {talentCategories.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
+              
               <div className="relative">
-                <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Where? (City, Area)"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gigzam-purple focus:border-transparent"
-                />
+                <Select value={selectedLocation} onValueChange={setSelectedLocation}>
+                  <SelectTrigger className="w-full pl-9 text-left h-[42px]">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <SelectValue placeholder="Where? (City, Area)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {locations.map((location) => (
+                        <SelectItem key={location} value={location.toLowerCase()}>
+                          {location}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
+              
               <div className="relative">
-                <Calendar className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="When? (Date)"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-gigzam-purple focus:border-transparent"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className={cn(
+                        "w-full h-[42px] pl-9 pr-4 justify-start text-left font-normal border border-gray-200",
+                        !date && "text-gray-400"
+                      )}
+                    >
+                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      {date ? format(date, "PPP") : "When? (Date)"}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0 z-50" align="start">
+                    <CalendarComponent
+                      mode="single"
+                      selected={date}
+                      onSelect={setDate}
+                      initialFocus
+                      className="p-3 pointer-events-auto"
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
             <div className="mt-4">
-              <Button className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg">
+              <Button 
+                onClick={handleSearch}
+                className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg"
+              >
                 Find Talents <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
