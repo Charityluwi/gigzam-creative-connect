@@ -27,6 +27,13 @@ const talentCategories = [
   { id: "designer", name: "Designer" },
   { id: "venue", name: "Venue" },
   { id: "decor", name: "Decor" },
+  { id: "caterer", name: "Caterer" },
+  { id: "sound", name: "Sound Engineer" },
+  { id: "dancer", name: "Dancer" },
+  { id: "car", name: "Car Hire" },
+  { id: "florist", name: "Florist" },
+  { id: "matron", name: "Matron" },
+  { id: "baker", name: "Baker" },
 ];
 
 const locations = [
