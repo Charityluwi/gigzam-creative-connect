@@ -1,12 +1,15 @@
 
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, Search, ChevronDown, User } from "lucide-react";
+import { Menu, X, Search, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import UserDropdown from "@/components/UserDropdown";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -85,16 +88,23 @@ const NavBar = () => {
               />
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
             </div>
-            <Link to="/login">
-              <Button variant="outline" className="border-gigzam-purple text-gigzam-purple hover:bg-gigzam-purple hover:text-white transition-colors">
-                Login
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button className="bg-gigzam-purple text-white hover:bg-gigzam-purple-dark">
-                Sign Up
-              </Button>
-            </Link>
+            
+            {user ? (
+              <UserDropdown />
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline" className="border-gigzam-purple text-gigzam-purple hover:bg-gigzam-purple hover:text-white transition-colors">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button className="bg-gigzam-purple text-white hover:bg-gigzam-purple-dark">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
           <div className="md:hidden flex items-center">
             <button
@@ -156,18 +166,46 @@ const NavBar = () => {
             >
               Contact
             </Link>
-            <div className="flex space-x-2 mt-4">
-              <Link to="/login" className="w-1/2">
-                <Button variant="outline" className="w-full border-gigzam-purple text-gigzam-purple hover:bg-gigzam-purple hover:text-white">
-                  Login
-                </Button>
-              </Link>
-              <Link to="/signup" className="w-1/2">
-                <Button className="w-full bg-gigzam-purple text-white hover:bg-gigzam-purple-dark">
-                  Sign Up
-                </Button>
-              </Link>
-            </div>
+            
+            {user ? (
+              <div className="mt-4 border-t pt-4">
+                <Link 
+                  to="/profile/me" 
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md"
+                >
+                  Profile
+                </Link>
+                <Link 
+                  to="/dashboard" 
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md"
+                >
+                  Dashboard
+                </Link>
+                <button 
+                  onClick={() => {
+                    const { signOut } = useAuth();
+                    signOut();
+                    setIsMenuOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md"
+                >
+                  Log out
+                </button>
+              </div>
+            ) : (
+              <div className="flex space-x-2 mt-4">
+                <Link to="/auth" className="w-1/2">
+                  <Button variant="outline" className="w-full border-gigzam-purple text-gigzam-purple hover:bg-gigzam-purple hover:text-white">
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/auth" className="w-1/2">
+                  <Button className="w-full bg-gigzam-purple text-white hover:bg-gigzam-purple-dark">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
