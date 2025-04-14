@@ -1,17 +1,22 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Get the tab parameter from the URL
+  const queryParams = new URLSearchParams(location.search);
+  const tabParam = queryParams.get('tab');
+  const [activeTab, setActiveTab] = useState(tabParam === 'register' ? 'register' : 'login');
   
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
@@ -23,6 +28,23 @@ const Auth = () => {
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerFullName, setRegisterFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Update URL when tab changes
+  useEffect(() => {
+    const newParams = new URLSearchParams(location.search);
+    if (activeTab === 'login') {
+      newParams.delete('tab');
+    } else {
+      newParams.set('tab', activeTab);
+    }
+    
+    const newSearch = newParams.toString();
+    const newPath = newSearch ? `${location.pathname}?${newSearch}` : location.pathname;
+    
+    if (location.search !== `?${newSearch}`) {
+      navigate(newPath, { replace: true });
+    }
+  }, [activeTab, location, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,7 +93,7 @@ const Auth = () => {
           <p className="text-gray-600">Connect with creative talent</p>
         </div>
         
-        <Tabs defaultValue="login" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="login">Login</TabsTrigger>
             <TabsTrigger value="register">Register</TabsTrigger>

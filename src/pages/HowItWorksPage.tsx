@@ -29,7 +29,7 @@ const HowItWorksPage = () => {
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link to="/signup">
+                <Link to="/auth?tab=register">
                   <Button variant="outline" className="border-gigzam-purple text-gigzam-purple hover:bg-gigzam-purple/10">
                     Create Account
                   </Button>
@@ -269,7 +269,7 @@ const HowItWorksPage = () => {
               Join GigZam today and experience the easiest way to book creative talent in Zambia.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/signup">
+              <Link to="/auth?tab=register">
                 <Button size="lg" className="bg-white text-gigzam-purple hover:bg-gray-100">
                   Create an Account
                 </Button>
