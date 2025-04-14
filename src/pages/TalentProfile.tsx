@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -13,8 +12,8 @@ import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import ShareTalentDialog from "@/components/ShareTalentDialog";
 
-// Mock talent data
 const mockTalent = {
   id: "1",
   name: "David Mwale",
@@ -108,11 +107,11 @@ const TalentProfile = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedPackage, setSelectedPackage] = useState(mockTalent.packages[0].id);
   const [currentImage, setCurrentImage] = useState(0);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
-  // We'd normally fetch data based on ID, but using mock data for now
   const talent = mockTalent;
 
-  // Get the selected package details
   const packageDetails = talent.packages.find(pkg => pkg.id === selectedPackage);
 
   const handlePrevImage = () => {
@@ -137,24 +136,34 @@ const TalentProfile = () => {
       return;
     }
 
-    // In a real app, we would validate availability here
-    
-    // Navigate to booking page with selected details
     navigate(`/booking?talent=${id}&package=${selectedPackage}&date=${format(selectedDate, "yyyy-MM-dd")}`);
   };
 
-  // Function to check if a date is available for booking
   const isDateUnavailable = (date: Date) => {
     const dateString = format(date, "yyyy-MM-dd");
     const unavailable = talent.availability.find(a => a.date === dateString && !a.available);
     return !!unavailable;
   };
 
+  const handleSave = () => {
+    setIsSaved(!isSaved);
+    toast({
+      title: isSaved ? "Removed from saved" : "Saved to favorites",
+      description: isSaved 
+        ? "This talent has been removed from your saved list" 
+        : "This talent has been added to your saved list",
+      variant: isSaved ? "destructive" : "default"
+    });
+  };
+
+  const handleShare = () => {
+    setShowShareDialog(true);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
       <main className="flex-grow pt-16">
-        {/* Hero Section */}
         <div className="relative h-64 md:h-80 bg-gigzam-purple-dark">
           <div className="absolute inset-0 bg-gradient-to-r from-gigzam-purple/70 to-gigzam-purple-dark/90"></div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative h-full flex items-end pb-10">
@@ -189,10 +198,8 @@ const TalentProfile = () => {
           </div>
         </div>
         
-        {/* Main Content */}
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Tabs for Bio, Portfolio, Reviews */}
             <div className="lg:col-span-2">
               <Tabs defaultValue="about">
                 <TabsList className="w-full mb-6">
@@ -259,7 +266,6 @@ const TalentProfile = () => {
                   <div className="bg-white p-6 rounded-lg shadow-sm">
                     <h2 className="text-xl font-semibold mb-4">Portfolio</h2>
                     
-                    {/* Main Portfolio Image/Video Viewer */}
                     <div className="relative mb-4 rounded-lg overflow-hidden h-80 bg-black">
                       {talent.portfolio[currentImage].type === "image" ? (
                         <img 
@@ -276,7 +282,6 @@ const TalentProfile = () => {
                         ></iframe>
                       )}
                       
-                      {/* Navigation arrows */}
                       <button 
                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
                         onClick={handlePrevImage}
@@ -291,7 +296,6 @@ const TalentProfile = () => {
                       </button>
                     </div>
                     
-                    {/* Thumbnails */}
                     <div className="grid grid-cols-4 gap-2">
                       {talent.portfolio.map((item, index) => (
                         <button
@@ -330,7 +334,6 @@ const TalentProfile = () => {
                       </div>
                     </div>
                     
-                    {/* Rating breakdown */}
                     <div className="mb-6">
                       <div className="flex items-center mb-1">
                         <span className="w-16 text-sm text-gray-600">5 stars</span>
@@ -359,7 +362,6 @@ const TalentProfile = () => {
                       </div>
                     </div>
                     
-                    {/* Review list */}
                     <div className="space-y-6">
                       {talent.reviewList.map((review) => (
                         <div key={review.id} className="pb-6 border-b border-gray-200 last:border-0">
@@ -390,7 +392,6 @@ const TalentProfile = () => {
               </Tabs>
             </div>
             
-            {/* Right Column: Booking Panel */}
             <div className="lg:col-span-1">
               <div className="bg-white p-6 rounded-lg shadow-sm mb-6 sticky top-24">
                 <h2 className="text-xl font-semibold mb-4">Book {talent.name}</h2>
@@ -448,11 +449,15 @@ const TalentProfile = () => {
                 </Button>
                 
                 <div className="flex gap-2">
-                  <Button variant="outline" className="flex-1">
-                    <Heart className="h-4 w-4 mr-2" />
-                    Save
+                  <Button 
+                    variant={isSaved ? "default" : "outline"} 
+                    className={`flex-1 ${isSaved ? "bg-gigzam-purple hover:bg-gigzam-purple-dark" : ""}`}
+                    onClick={handleSave}
+                  >
+                    <Heart className={`h-4 w-4 mr-2 ${isSaved ? "fill-white" : ""}`} />
+                    {isSaved ? "Saved" : "Save"}
                   </Button>
-                  <Button variant="outline" className="flex-1">
+                  <Button variant="outline" className="flex-1" onClick={handleShare}>
                     <Share className="h-4 w-4 mr-2" />
                     Share
                   </Button>
@@ -463,6 +468,14 @@ const TalentProfile = () => {
         </div>
       </main>
       <Footer />
+      
+      <ShareTalentDialog 
+        isOpen={showShareDialog} 
+        onClose={() => setShowShareDialog(false)} 
+        talentName={talent.name}
+        talentId={talent.id}
+        talentCategory={talent.category}
+      />
     </div>
   );
 };
