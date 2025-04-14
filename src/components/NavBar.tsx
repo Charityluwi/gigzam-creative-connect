@@ -1,14 +1,19 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, X, Search, ChevronDown, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
   };
 
   return (
@@ -45,14 +50,29 @@ const NavBar = () => {
                   </Link>
                 </div>
               </div>
-              <Link to="/discover" className="text-gray-700 hover:text-gigzam-purple px-1 pt-1 text-sm font-medium">
+              <Link 
+                to="/discover" 
+                className={`${isActive('/discover') ? 'text-gigzam-purple border-b-2 border-gigzam-purple' : 'text-gray-700 hover:text-gigzam-purple'} px-1 pt-1 text-sm font-medium`}
+              >
                 Discover
               </Link>
-              <Link to="/about" className="text-gray-700 hover:text-gigzam-purple px-1 pt-1 text-sm font-medium">
+              <Link 
+                to="/about" 
+                className={`${isActive('/about') ? 'text-gigzam-purple border-b-2 border-gigzam-purple' : 'text-gray-700 hover:text-gigzam-purple'} px-1 pt-1 text-sm font-medium`}
+              >
                 About
               </Link>
-              <Link to="/how-it-works" className="text-gray-700 hover:text-gigzam-purple px-1 pt-1 text-sm font-medium">
+              <Link 
+                to="/how-it-works" 
+                className={`${isActive('/how-it-works') ? 'text-gigzam-purple border-b-2 border-gigzam-purple' : 'text-gray-700 hover:text-gigzam-purple'} px-1 pt-1 text-sm font-medium`}
+              >
                 How It Works
+              </Link>
+              <Link 
+                to="/contact" 
+                className={`${isActive('/contact') ? 'text-gigzam-purple border-b-2 border-gigzam-purple' : 'text-gray-700 hover:text-gigzam-purple'} px-1 pt-1 text-sm font-medium`}
+              >
+                Contact
               </Link>
             </div>
           </div>
@@ -112,14 +132,29 @@ const NavBar = () => {
             <Link to="/category/photographers" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md">
               Photographers
             </Link>
-            <Link to="/discover" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md">
+            <Link 
+              to="/discover" 
+              className={`block px-3 py-2 text-base font-medium ${isActive('/discover') ? 'text-gigzam-purple bg-gigzam-purple/10' : 'text-gray-700 hover:bg-gigzam-purple/10'} rounded-md`}
+            >
               Discover
             </Link>
-            <Link to="/about" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md">
+            <Link 
+              to="/about" 
+              className={`block px-3 py-2 text-base font-medium ${isActive('/about') ? 'text-gigzam-purple bg-gigzam-purple/10' : 'text-gray-700 hover:bg-gigzam-purple/10'} rounded-md`}
+            >
               About
             </Link>
-            <Link to="/how-it-works" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md">
+            <Link 
+              to="/how-it-works" 
+              className={`block px-3 py-2 text-base font-medium ${isActive('/how-it-works') ? 'text-gigzam-purple bg-gigzam-purple/10' : 'text-gray-700 hover:bg-gigzam-purple/10'} rounded-md`}
+            >
               How It Works
+            </Link>
+            <Link 
+              to="/contact" 
+              className={`block px-3 py-2 text-base font-medium ${isActive('/contact') ? 'text-gigzam-purple bg-gigzam-purple/10' : 'text-gray-700 hover:bg-gigzam-purple/10'} rounded-md`}
+            >
+              Contact
             </Link>
             <div className="flex space-x-2 mt-4">
               <Link to="/login" className="w-1/2">
