@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import { ArrowRight, Check, Info } from "lucide-react";
+import { ArrowRight, Check, Info, Image, Link, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -43,6 +43,11 @@ const formSchema = z.object({
   }),
   bio: z.string().min(50, { message: "Bio must be at least 50 characters" }),
   experience: z.string().min(3, { message: "Please specify your years of experience" }),
+  website: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
+  instagram: z.string().optional(),
+  facebook: z.string().optional(),
+  tiktok: z.string().optional(),
+  youtube: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -50,6 +55,8 @@ type FormValues = z.infer<typeof formSchema>;
 const BecomeCreative = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [portfolioImages, setPortfolioImages] = useState<File[]>([]);
+  const [portfolioImagePreviews, setPortfolioImagePreviews] = useState<string[]>([]);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -60,11 +67,45 @@ const BecomeCreative = () => {
       category: "",
       bio: "",
       experience: "",
+      website: "",
+      instagram: "",
+      facebook: "",
+      tiktok: "",
+      youtube: "",
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const newFiles = Array.from(e.target.files);
+    
+    // Limit to a maximum of 5 images
+    const combinedFiles = [...portfolioImages, ...newFiles].slice(0, 5);
+    setPortfolioImages(combinedFiles);
+    
+    // Create preview URLs for the images
+    const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+    const combinedPreviews = [...portfolioImagePreviews, ...newPreviews].slice(0, 5);
+    setPortfolioImagePreviews(combinedPreviews);
+  };
+  
+  const removeImage = (index: number) => {
+    const updatedImages = [...portfolioImages];
+    updatedImages.splice(index, 1);
+    setPortfolioImages(updatedImages);
+    
+    const updatedPreviews = [...portfolioImagePreviews];
+    URL.revokeObjectURL(updatedPreviews[index]); // Clean up URL object
+    updatedPreviews.splice(index, 1);
+    setPortfolioImagePreviews(updatedPreviews);
+  };
+
   function onSubmit(data: FormValues) {
     setIsSubmitting(true);
+    
+    // In a real implementation, we would upload the files here
+    // along with the form data to an API endpoint
     
     // Simulate API call
     setTimeout(() => {
@@ -75,8 +116,8 @@ const BecomeCreative = () => {
         description: "We've received your application and will contact you soon.",
       });
       
-      // In a real app, we would submit this data to an API
       console.log("Form data:", data);
+      console.log("Portfolio images:", portfolioImages);
       
       // Navigate to dashboard or confirmation page
       navigate("/");
@@ -215,6 +256,152 @@ const BecomeCreative = () => {
                         </FormItem>
                       )}
                     />
+                    
+                    {/* Portfolio Images Section */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Image className="h-5 w-5 text-muted-foreground" />
+                        <h3 className="text-lg font-medium">Portfolio Images</h3>
+                      </div>
+                      <div className="p-4 border border-dashed rounded-md bg-muted/50">
+                        <div className="flex flex-wrap gap-4 mb-4">
+                          {portfolioImagePreviews.map((preview, index) => (
+                            <div key={index} className="relative group">
+                              <img 
+                                src={preview} 
+                                alt={`Portfolio image ${index + 1}`}
+                                className="w-24 h-24 object-cover rounded-md"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => removeImage(index)}
+                                className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          ))}
+                          
+                          {portfolioImages.length < 5 && (
+                            <label className="flex flex-col items-center justify-center w-24 h-24 border-2 border-dashed border-muted-foreground/50 rounded-md cursor-pointer hover:bg-muted transition-colors">
+                              <Image className="h-6 w-6 text-muted-foreground" />
+                              <span className="text-xs text-muted-foreground mt-2">Add Image</span>
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                className="hidden" 
+                                onChange={handleFileChange}
+                                multiple={portfolioImages.length === 0}
+                              />
+                            </label>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          Upload up to 5 images of your previous work (optional). Max 5MB per image.
+                        </p>
+                      </div>
+                    </div>
+                    
+                    {/* Social Media Links */}
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <Link className="h-5 w-5 text-muted-foreground" />
+                        <h3 className="text-lg font-medium">Online Presence</h3>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="website"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Website/Portfolio URL</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="https://yourwebsite.com" 
+                                  {...field}
+                                  value={field.value || ""}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="instagram"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Instagram</FormLabel>
+                              <FormControl>
+                                <div className="flex">
+                                  <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                                    @
+                                  </span>
+                                  <Input 
+                                    placeholder="username" 
+                                    className="rounded-l-none"
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <FormField
+                          control={form.control}
+                          name="facebook"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Facebook</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Username or page name" {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="tiktok"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>TikTok</FormLabel>
+                              <FormControl>
+                                <div className="flex">
+                                  <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
+                                    @
+                                  </span>
+                                  <Input 
+                                    placeholder="username" 
+                                    className="rounded-l-none"
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                        
+                        <FormField
+                          control={form.control}
+                          name="youtube"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>YouTube</FormLabel>
+                              <FormControl>
+                                <Input placeholder="Channel name" {...field} />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
                     
                     <div className="pt-4">
                       <Button 
