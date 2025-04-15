@@ -33,6 +33,7 @@ const serviceCategories = [
   { id: "florist", name: "Florist" },
   { id: "matron", name: "Matron" },
   { id: "baker", name: "Baker" },
+  { id: "other", name: "Other" },
 ];
 
 const phoneRegex = /^(\+?260|0)?[79]\d{8}$/;
@@ -45,6 +46,10 @@ const formSchema = z.object({
   category: z.string({
     required_error: "Please select a service category",
   }),
+  otherCategory: z.string().optional()
+    .refine(val => val === undefined || val.length >= 3 || val.length === 0, {
+      message: "Other category must be at least 3 characters",
+    }),
   bio: z.string().min(50, { message: "Bio must be at least 50 characters" }),
   experience: z.string().min(1, { message: "Please specify your years of experience" })
     .refine((val) => !isNaN(Number(val)) || val.match(/^\d+(\.\d+)?\+?$/), {
@@ -73,6 +78,7 @@ const BecomeCreative = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [portfolioImages, setPortfolioImages] = useState<File[]>([]);
   const [portfolioImagePreviews, setPortfolioImagePreviews] = useState<string[]>([]);
+  const [showOtherCategory, setShowOtherCategory] = useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -81,6 +87,7 @@ const BecomeCreative = () => {
       email: "",
       phone: "",
       category: "",
+      otherCategory: "",
       bio: "",
       experience: "",
       website: "",
@@ -88,9 +95,18 @@ const BecomeCreative = () => {
       facebook: "",
       tiktok: "",
       youtube: "",
-      termsAccepted: false, // This is now allowed as we've changed the schema
+      termsAccepted: false,
     },
   });
+
+  const handleCategoryChange = (value: string) => {
+    form.setValue("category", value);
+    setShowOtherCategory(value === "other");
+    
+    if (value !== "other") {
+      form.setValue("otherCategory", "");
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -137,6 +153,11 @@ const BecomeCreative = () => {
         description: "Please upload at least one portfolio image to showcase your work.",
         variant: "destructive",
       });
+      return;
+    }
+    
+    if (data.category === "other" && (!data.otherCategory || data.otherCategory.trim().length < 3)) {
+      form.setError("otherCategory", { message: "Please specify your service category" });
       return;
     }
     
@@ -237,30 +258,51 @@ const BecomeCreative = () => {
                         )}
                       />
                       
-                      <FormField
-                        control={form.control}
-                        name="category"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Service Category</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select your service category" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {serviceCategories.map((category) => (
-                                  <SelectItem key={category.id} value={category.id}>
-                                    {category.name}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
+                      <div className="space-y-6">
+                        <FormField
+                          control={form.control}
+                          name="category"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Service Category</FormLabel>
+                              <Select onValueChange={handleCategoryChange} defaultValue={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select your service category" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {serviceCategories.map((category) => (
+                                    <SelectItem key={category.id} value={category.id}>
+                                      {category.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        
+                        {showOtherCategory && (
+                          <FormField
+                            control={form.control}
+                            name="otherCategory"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Specify Your Service Category</FormLabel>
+                                <FormControl>
+                                  <Input 
+                                    placeholder="Your specific service category" 
+                                    {...field} 
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
                         )}
-                      />
+                      </div>
                     </div>
                     
                     <FormField

@@ -9,6 +9,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
+import { Check, X } from "lucide-react";
+
+// Password validation
+const passwordStrengthSchema = {
+  length: (value: string) => value.length >= 8,
+  uppercase: (value: string) => /[A-Z]/.test(value),
+  lowercase: (value: string) => /[a-z]/.test(value),
+  number: (value: string) => /[0-9]/.test(value),
+  special: (value: string) => /[!@#$%^&*(),.?":{}|<>]/.test(value),
+};
 
 // Form validation schemas
 const loginSchema = z.object({
@@ -18,7 +28,12 @@ const loginSchema = z.object({
 
 const registerSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .refine((value) => /[A-Z]/.test(value), "Password must contain at least 1 uppercase letter")
+    .refine((value) => /[a-z]/.test(value), "Password must contain at least 1 lowercase letter")
+    .refine((value) => /[0-9]/.test(value), "Password must contain at least 1 number")
+    .refine((value) => /[!@#$%^&*(),.?":{}|<>]/.test(value), "Password must contain at least 1 special character"),
   username: z.string().min(3, "Username must be at least 3 characters"),
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   confirmPassword: z.string()
@@ -48,6 +63,15 @@ const Auth = () => {
   const [registerFullName, setRegisterFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
+  
+  // Password strength state
+  const [passwordStrength, setPasswordStrength] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false,
+  });
 
   // Update URL when tab changes
   useEffect(() => {
@@ -65,6 +89,27 @@ const Auth = () => {
       navigate(newPath, { replace: true });
     }
   }, [activeTab, location, navigate]);
+
+  // Update password strength in real-time
+  useEffect(() => {
+    if (registerPassword) {
+      setPasswordStrength({
+        length: passwordStrengthSchema.length(registerPassword),
+        uppercase: passwordStrengthSchema.uppercase(registerPassword),
+        lowercase: passwordStrengthSchema.lowercase(registerPassword),
+        number: passwordStrengthSchema.number(registerPassword),
+        special: passwordStrengthSchema.special(registerPassword),
+      });
+    } else {
+      setPasswordStrength({
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false,
+      });
+    }
+  }, [registerPassword]);
 
   const validateLoginForm = () => {
     try {
@@ -153,6 +198,16 @@ const Auth = () => {
       setRegisterErrors({
         ...registerErrors,
         confirmPassword: "Passwords do not match"
+      });
+      return;
+    }
+    
+    // Check if all password criteria are met
+    const allCriteriaMet = Object.values(passwordStrength).every(Boolean);
+    if (!allCriteriaMet) {
+      setRegisterErrors({
+        ...registerErrors,
+        password: "Password does not meet all requirements"
       });
       return;
     }
@@ -332,6 +387,63 @@ const Auth = () => {
                     {registerErrors.password && (
                       <p className="text-sm text-red-500">{registerErrors.password}</p>
                     )}
+                    
+                    {/* Password strength indicator */}
+                    <div className="mt-2 space-y-1">
+                      <p className="text-sm font-medium text-gray-700">Password requirements:</p>
+                      <ul className="space-y-1">
+                        <li className="text-sm flex items-center">
+                          {passwordStrength.length ? (
+                            <Check className="h-4 w-4 text-green-500 mr-2" />
+                          ) : (
+                            <X className="h-4 w-4 text-red-500 mr-2" />
+                          )}
+                          <span className={passwordStrength.length ? "text-green-600" : "text-gray-600"}>
+                            At least 8 characters
+                          </span>
+                        </li>
+                        <li className="text-sm flex items-center">
+                          {passwordStrength.uppercase ? (
+                            <Check className="h-4 w-4 text-green-500 mr-2" />
+                          ) : (
+                            <X className="h-4 w-4 text-red-500 mr-2" />
+                          )}
+                          <span className={passwordStrength.uppercase ? "text-green-600" : "text-gray-600"}>
+                            At least 1 uppercase letter (A-Z)
+                          </span>
+                        </li>
+                        <li className="text-sm flex items-center">
+                          {passwordStrength.lowercase ? (
+                            <Check className="h-4 w-4 text-green-500 mr-2" />
+                          ) : (
+                            <X className="h-4 w-4 text-red-500 mr-2" />
+                          )}
+                          <span className={passwordStrength.lowercase ? "text-green-600" : "text-gray-600"}>
+                            At least 1 lowercase letter (a-z)
+                          </span>
+                        </li>
+                        <li className="text-sm flex items-center">
+                          {passwordStrength.number ? (
+                            <Check className="h-4 w-4 text-green-500 mr-2" />
+                          ) : (
+                            <X className="h-4 w-4 text-red-500 mr-2" />
+                          )}
+                          <span className={passwordStrength.number ? "text-green-600" : "text-gray-600"}>
+                            At least 1 number (0-9)
+                          </span>
+                        </li>
+                        <li className="text-sm flex items-center">
+                          {passwordStrength.special ? (
+                            <Check className="h-4 w-4 text-green-500 mr-2" />
+                          ) : (
+                            <X className="h-4 w-4 text-red-500 mr-2" />
+                          )}
+                          <span className={passwordStrength.special ? "text-green-600" : "text-gray-600"}>
+                            At least 1 special character (e.g., !, @, #)
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>
@@ -346,6 +458,9 @@ const Auth = () => {
                     />
                     {registerErrors.confirmPassword && (
                       <p className="text-sm text-red-500">{registerErrors.confirmPassword}</p>
+                    )}
+                    {registerPassword && confirmPassword && registerPassword !== confirmPassword && (
+                      <p className="text-sm text-red-500">Passwords do not match</p>
                     )}
                   </div>
                 </CardContent>
