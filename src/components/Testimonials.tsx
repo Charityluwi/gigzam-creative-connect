@@ -1,6 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, ArrowLeft, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const testimonials = [
   {
@@ -31,82 +32,116 @@ const testimonials = [
 
 const Testimonials = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [autoplay, setAutoplay] = useState(true);
+
+  useEffect(() => {
+    if (!autoplay) return;
+    
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+    }, 8000);
+    
+    return () => clearInterval(interval);
+  }, [autoplay]);
 
   const nextTestimonial = () => {
+    setAutoplay(false);
     setActiveIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
   };
 
   const prevTestimonial = () => {
+    setAutoplay(false);
     setActiveIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section className="py-24 bg-gray-50 rounded-2xl my-24 overflow-hidden relative">
+      {/* Decorative element */}
+      <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-gradient-to-br from-gigzam-purple/10 to-gigzam-purple/30"></div>
+      <div className="absolute -bottom-12 -left-12 w-32 h-32 rounded-full bg-gradient-to-br from-purple-200/30 to-purple-300/50"></div>
+      
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
             What Our Users Say
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
+          <p className="text-lg text-gray-600">
             Hear from clients and creatives who have experienced the GigZam difference
           </p>
         </div>
 
         <div className="max-w-4xl mx-auto relative">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-full md:w-1/3 flex flex-col items-center">
-                <div className="w-24 h-24 rounded-full overflow-hidden mb-4">
-                  <img
-                    src={testimonials[activeIndex].image}
-                    alt={testimonials[activeIndex].name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900">
-                  {testimonials[activeIndex].name}
-                </h3>
-                <p className="text-gray-600 mb-3">{testimonials[activeIndex].role}</p>
-                <div className="flex">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="h-5 w-5"
-                      fill={i < testimonials[activeIndex].rating ? "#F59E0B" : "none"}
-                      color={i < testimonials[activeIndex].rating ? "#F59E0B" : "#D1D5DB"}
+          <AnimatePresence mode="wait">
+            <motion.div 
+              key={activeIndex}
+              className="bg-white rounded-3xl shadow-xl p-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="w-full md:w-1/3 flex flex-col items-center">
+                  <div className="w-24 h-24 rounded-full overflow-hidden mb-5 ring-4 ring-gigzam-purple/10">
+                    <img
+                      src={testimonials[activeIndex].image}
+                      alt={testimonials[activeIndex].name}
+                      className="w-full h-full object-cover"
                     />
-                  ))}
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                    {testimonials[activeIndex].name}
+                  </h3>
+                  <p className="text-gray-600 mb-4">{testimonials[activeIndex].role}</p>
+                  <div className="flex">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className="h-5 w-5"
+                        fill={i < testimonials[activeIndex].rating ? "#F59E0B" : "none"}
+                        color={i < testimonials[activeIndex].rating ? "#F59E0B" : "#D1D5DB"}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div className="w-full md:w-2/3">
+                  <blockquote className="text-gray-800 text-lg italic leading-relaxed">
+                    "{testimonials[activeIndex].text}"
+                  </blockquote>
                 </div>
               </div>
-              <div className="w-full md:w-2/3">
-                <blockquote className="text-gray-800 text-lg italic">
-                  "{testimonials[activeIndex].text}"
-                </blockquote>
-              </div>
-            </div>
-          </div>
+            </motion.div>
+          </AnimatePresence>
 
-          <div className="flex justify-center mt-8 space-x-4">
+          <div className="flex justify-center mt-10 space-x-4">
             <button
               onClick={prevTestimonial}
               className="p-2 rounded-full border border-gray-300 hover:bg-gigzam-purple hover:border-gigzam-purple hover:text-white transition-colors"
+              aria-label="Previous testimonial"
             >
               <ArrowLeft className="h-5 w-5" />
             </button>
-            <div className="flex space-x-2">
+            <div className="flex space-x-2 items-center">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setActiveIndex(index)}
-                  className={`w-3 h-3 rounded-full ${
-                    activeIndex === index ? "bg-gigzam-purple" : "bg-gray-300"
+                  onClick={() => {
+                    setAutoplay(false);
+                    setActiveIndex(index);
+                  }}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    activeIndex === index 
+                      ? "bg-gigzam-purple w-8" 
+                      : "bg-gray-300 hover:bg-gray-400"
                   }`}
+                  aria-label={`Go to testimonial ${index + 1}`}
                 />
               ))}
             </div>
             <button
               onClick={nextTestimonial}
               className="p-2 rounded-full border border-gray-300 hover:bg-gigzam-purple hover:border-gigzam-purple hover:text-white transition-colors"
+              aria-label="Next testimonial"
             >
               <ArrowRight className="h-5 w-5" />
             </button>

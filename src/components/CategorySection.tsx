@@ -16,6 +16,7 @@ import {
   Cake
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const categories = [
   {
@@ -110,25 +111,52 @@ const categories = [
   },
 ];
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.1
+    }
+  }
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+};
+
 const CategorySection = () => {
   return (
-    <section className="py-16 bg-gray-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 gigzam-logo">
-            Explore Popular Service Categories
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Find the perfect creative professional for your next event
-          </p>
-        </div>
+    <section className="py-24 rounded-2xl my-10">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+        className="text-center max-w-3xl mx-auto mb-12"
+      >
+        <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 gigzam-logo mb-4">
+          Explore Popular Service Categories
+        </h2>
+        <p className="mt-4 text-lg text-gray-600">
+          Find the perfect creative professional for your next event
+        </p>
+      </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {categories.map((category) => (
+      <motion.div 
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        variants={container}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+      >
+        {categories.map((category) => (
+          <motion.div key={category.id} variants={item}>
             <Link
-              key={category.id}
               to={`/search?category=${category.id}`}
-              className="stripe-card group flex flex-col items-center p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:border-gigzam-purple/20"
+              className="stripe-card group flex flex-col items-center p-5 rounded-xl transition-all duration-300 hover:shadow-md hover:border-gigzam-purple/30 hover:scale-105"
               onClick={() => window.scrollTo(0, 0)}
             >
               <div className={`p-3 rounded-full ${category.color} group-hover:scale-110 transition-transform`}>
@@ -138,9 +166,9 @@ const CategorySection = () => {
                 {category.name}
               </h3>
             </Link>
-          ))}
-        </div>
-      </div>
+          </motion.div>
+        ))}
+      </motion.div>
     </section>
   );
 };

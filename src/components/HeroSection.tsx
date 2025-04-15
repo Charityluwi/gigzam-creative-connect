@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const serviceCategories = [
   { id: "musician", name: "Musician" },
@@ -49,6 +50,20 @@ const locations = [
   "Kasama",
 ];
 
+const fadeInUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
+
+const staggerContainer = {
+  animate: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 const HeroSection = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
@@ -66,22 +81,46 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative min-h-[600px] flex items-center african-pattern overflow-hidden clip-path-slant">
+    <div className="relative min-h-[700px] flex items-center african-pattern overflow-hidden">
+      {/* Background gradient */}
       <div className="absolute inset-0 stripe-gradient opacity-90"></div>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24">
-        <div className="max-w-3xl mx-auto text-center">
-          <h1 className="gigzam-logo text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in">
+      
+      {/* Custom shape divider */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" fill="#ffffff" preserveAspectRatio="none" className="w-full h-[70px]">
+          <path d="M0,64L60,69.3C120,75,240,85,360,80C480,75,600,53,720,48C840,43,960,53,1080,58.7C1200,64,1320,64,1380,64L1440,64L1440,100L1380,100C1320,100,1200,100,1080,100C960,100,840,100,720,100C600,100,480,100,360,100C240,100,120,100,60,100L0,100Z"></path>
+        </svg>
+      </div>
+      
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
+        <motion.div 
+          className="max-w-3xl mx-auto text-center"
+          initial="initial"
+          animate="animate"
+          variants={staggerContainer}
+        >
+          <motion.h1 
+            className="gigzam-logo text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight"
+            variants={fadeInUp}
+          >
             Discover & Book Amazing Services in Zambia
-          </h1>
-          <p className="text-xl text-white/90 mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Connect with the best musicians, DJs, photographers, makeup artists and more for your next event
-          </p>
+          </motion.h1>
           
-          <div className="bg-white rounded-xl shadow-xl p-4 max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: "0.4s" }}>
+          <motion.p 
+            className="text-xl text-white/90 mb-8"
+            variants={fadeInUp}
+          >
+            Connect with the best musicians, DJs, photographers, makeup artists and more for your next event
+          </motion.p>
+          
+          <motion.div 
+            className="bg-white rounded-xl shadow-xl p-6 max-w-2xl mx-auto"
+            variants={fadeInUp}
+          >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full pl-9 text-left h-[42px]">
+                  <SelectTrigger className="w-full pl-9 text-left h-[42px] bg-white">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <SelectValue placeholder="What service do you need?" />
                   </SelectTrigger>
@@ -99,7 +138,7 @@ const HeroSection = () => {
               
               <div className="relative">
                 <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                  <SelectTrigger className="w-full pl-9 text-left h-[42px]">
+                  <SelectTrigger className="w-full pl-9 text-left h-[42px] bg-white">
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <SelectValue placeholder="Where? (City, Area)" />
                   </SelectTrigger>
@@ -121,7 +160,7 @@ const HeroSection = () => {
                     <Button 
                       variant="outline" 
                       className={cn(
-                        "w-full h-[42px] pl-9 pr-4 justify-start text-left font-normal border border-gray-200",
+                        "w-full h-[42px] pl-9 pr-4 justify-start text-left font-normal border border-gray-200 bg-white",
                         !date && "text-gray-400"
                       )}
                     >
@@ -141,17 +180,20 @@ const HeroSection = () => {
                 </Popover>
               </div>
             </div>
-            <div className="mt-4">
+            <div className="mt-5">
               <Button 
                 onClick={handleSearch}
-                className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg"
+                className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg rounded-md shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01]"
               >
                 Find Services <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
-          </div>
+          </motion.div>
           
-          <div className="mt-8 text-white/80 flex flex-wrap justify-center gap-x-8 gap-y-2 animate-fade-up" style={{ animationDelay: "0.6s" }}>
+          <motion.div 
+            className="mt-8 text-white/80 flex flex-wrap justify-center gap-x-8 gap-y-2"
+            variants={fadeInUp}
+          >
             <span className="flex items-center">
               <span className="bg-white h-1.5 w-1.5 rounded-full mr-2"></span>
               10,000+ Verified Services
@@ -164,8 +206,8 @@ const HeroSection = () => {
               <span className="bg-white h-1.5 w-1.5 rounded-full mr-2"></span>
               100% Satisfaction Guarantee
             </span>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
