@@ -155,7 +155,7 @@ const CategorySection = () => {
         {categories.map((category) => (
           <motion.div key={category.id} variants={item}>
             <Link
-              to={`/search?category=${category.id}`}
+              to={`/category/${category.id}`}
               className="stripe-card group flex flex-col items-center p-5 rounded-xl transition-all duration-300 hover:shadow-md hover:border-gigzam-purple/30 hover:scale-105"
               onClick={() => window.scrollTo(0, 0)}
             >

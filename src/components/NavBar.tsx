@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search, ChevronDown } from "lucide-react";
@@ -53,20 +52,29 @@ const NavBar = () => {
                   <ChevronDown className="ml-1 h-4 w-4" />
                 </button>
                 <div className="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out z-50 bg-white rounded-md shadow-lg p-2">
-                  <Link to="/category/musicians" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                  <Link to="/category/musician" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
                     Musicians
                   </Link>
-                  <Link to="/category/djs" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                  <Link to="/category/dj" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
                     DJs
                   </Link>
-                  <Link to="/category/photographers" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                  <Link to="/category/photographer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
                     Photographers
                   </Link>
                   <Link to="/category/makeup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
                     Makeup Artists
                   </Link>
-                  <Link to="/category/venues" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                  <Link to="/category/venue" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
                     Venues
+                  </Link>
+                  <Link to="/category/caterer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                    Caterers
+                  </Link>
+                  <Link to="/category/decor" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                    Decor
+                  </Link>
+                  <Link to="/category/hair" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
+                    Hair Stylists
                   </Link>
                 </div>
               </div>
@@ -161,14 +169,29 @@ const NavBar = () => {
                 Search
               </Button>
             </form>
-            <Link to="/category/musicians" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+            <Link to="/category/musician" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
               Musicians
             </Link>
-            <Link to="/category/djs" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+            <Link to="/category/dj" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
               DJs
             </Link>
-            <Link to="/category/photographers" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+            <Link to="/category/photographer" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
               Photographers
+            </Link>
+            <Link to="/category/makeup" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+              Makeup Artists
+            </Link>
+            <Link to="/category/venue" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+              Venues
+            </Link>
+            <Link to="/category/caterer" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+              Caterers
+            </Link>
+            <Link to="/category/decor" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+              Decor
+            </Link>
+            <Link to="/category/hair" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
+              Hair Stylists
             </Link>
             <Link 
               to="/discover" 
