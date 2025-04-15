@@ -61,8 +61,8 @@ const formSchema = z.object({
       message: "Do not include the @ symbol",
     }),
   youtube: z.string().optional(),
-  termsAccepted: z.literal(true, {
-    errorMap: () => ({ message: "You must accept the Terms and Conditions" }),
+  termsAccepted: z.boolean().refine(val => val === true, {
+    message: "You must accept the Terms and Conditions",
   }),
 });
 
@@ -88,7 +88,7 @@ const BecomeCreative = () => {
       facebook: "",
       tiktok: "",
       youtube: "",
-      termsAccepted: false,
+      termsAccepted: false, // This is now allowed as we've changed the schema
     },
   });
 
