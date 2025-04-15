@@ -63,15 +63,21 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// GigZam custom colors
+				// GigZam custom colors - updated to Stripe-inspired palette
 				gigzam: {
-					'purple': '#9b87f5',
-					'purple-dark': '#6E59A5',
-					'orange': '#F97316',
-					'peach': '#FDE1D3',
+					'purple': '#635BFF', // Stripe's primary blue/purple
+					'purple-dark': '#4B44C0', // Darker variant
+					'orange': '#F97316', // Keep for accent
+					'peach': '#FDE1D3', 
 					'earth': '#8A5A44',
 					'gold': '#D4AF37',
+					'gray': '#8E9196', // Neutral gray
+					'charcoal': '#1A1F2C', // Dark gray
+					'light-gray': '#F6F6F7', // Light background
 				}
+			},
+			fontFamily: {
+				sans: ['Inter', 'Helvetica Neue', 'system-ui', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

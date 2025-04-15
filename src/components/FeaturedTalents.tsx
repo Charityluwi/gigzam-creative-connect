@@ -62,14 +62,14 @@ const FeaturedTalents = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-              Featured Talents
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 gigzam-logo">
+              Featured Services
             </h2>
             <p className="mt-2 text-lg text-gray-600">
               Discover our handpicked selection of top-rated professionals
             </p>
           </div>
-          <Link to="/discover">
+          <Link to="/discover" onClick={() => window.scrollTo(0, 0)}>
             <Button variant="outline" className="border-gigzam-purple text-gigzam-purple hover:bg-gigzam-purple hover:text-white">
               View All <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

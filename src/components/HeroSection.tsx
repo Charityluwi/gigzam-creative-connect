@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 
-const talentCategories = [
+const serviceCategories = [
   { id: "musician", name: "Musician" },
   { id: "dj", name: "DJ" },
   { id: "photographer", name: "Photographer" },
@@ -62,15 +62,16 @@ const HeroSection = () => {
     if (date) searchParams.append("date", format(date, "yyyy-MM-dd"));
     
     navigate(`/search?${searchParams.toString()}`);
+    window.scrollTo(0, 0);
   };
 
   return (
     <div className="relative min-h-[600px] flex items-center african-pattern overflow-hidden clip-path-slant">
-      <div className="absolute inset-0 bg-gradient-to-r from-gigzam-purple/90 to-gigzam-purple-dark/90"></div>
+      <div className="absolute inset-0 stripe-gradient opacity-90"></div>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-24">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in">
-            Discover & Book Amazing Talent in Zambia
+          <h1 className="gigzam-logo text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight animate-fade-in">
+            Discover & Book Amazing Services in Zambia
           </h1>
           <p className="text-xl text-white/90 mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
             Connect with the best musicians, DJs, photographers, makeup artists and more for your next event
@@ -82,11 +83,11 @@ const HeroSection = () => {
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
                   <SelectTrigger className="w-full pl-9 text-left h-[42px]">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                    <SelectValue placeholder="What talent do you need?" />
+                    <SelectValue placeholder="What service do you need?" />
                   </SelectTrigger>
                   <SelectContent className="max-h-[300px]">
                     <SelectGroup>
-                      {talentCategories.map((category) => (
+                      {serviceCategories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
                         </SelectItem>
@@ -145,7 +146,7 @@ const HeroSection = () => {
                 onClick={handleSearch}
                 className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg"
               >
-                Find Talents <ArrowRight className="ml-2 h-5 w-5" />
+                Find Services <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -153,7 +154,7 @@ const HeroSection = () => {
           <div className="mt-8 text-white/80 flex flex-wrap justify-center gap-x-8 gap-y-2 animate-fade-up" style={{ animationDelay: "0.6s" }}>
             <span className="flex items-center">
               <span className="bg-white h-1.5 w-1.5 rounded-full mr-2"></span>
-              10,000+ Verified Talents
+              10,000+ Verified Services
             </span>
             <span className="flex items-center">
               <span className="bg-white h-1.5 w-1.5 rounded-full mr-2"></span>

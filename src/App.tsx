@@ -21,7 +21,16 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import TermsOfService from "./pages/TermsOfService";
 
-const queryClient = new QueryClient();
+// Set up QueryClient with retries and caching
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -35,6 +44,7 @@ const App = () => (
             <Route path="/search" element={<Search />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/talent/:id" element={<TalentProfile />} />
+            <Route path="/category/:category" element={<Search />} />
             <Route path="/booking" element={
               <ProtectedRoute>
                 <Booking />
@@ -51,6 +61,8 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/privacy-policy" element={<TermsOfService />} />
+            <Route path="/faq" element={<HowItWorksPage />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/profile/me" element={
               <ProtectedRoute>

@@ -1,4 +1,6 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,7 +16,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    --primary: 265 84% 75%;
+    --primary: 250 100% 69%; /* Stripe purple (#635BFF) */
     --primary-foreground: 0 0% 98%;
 
     --secondary: 240 4.8% 95.9%;
@@ -31,7 +33,7 @@
 
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
-    --ring: 265 84% 75%;
+    --ring: 250 100% 69%; /* Stripe purple */
 
     --radius: 0.5rem;
 
@@ -42,7 +44,7 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 265 84% 75%;
+    --sidebar-ring: 250 100% 69%; /* Stripe purple */
   }
 
   .dark {
@@ -55,7 +57,7 @@
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 265 84% 70%;
+    --primary: 250 100% 69%; /* Stripe purple (#635BFF) */
     --primary-foreground: 0 0% 98%;
 
     --secondary: 240 3.7% 15.9%;
@@ -72,16 +74,16 @@
 
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
-    --ring: 265 84% 70%;
+    --ring: 250 100% 69%; /* Stripe purple */
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 265 84% 70%;
+    --sidebar-primary: 250 100% 69%; /* Stripe purple */
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 265 84% 70%;
+    --sidebar-ring: 250 100% 69%; /* Stripe purple */
   }
 }
 
@@ -91,13 +93,13 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 }
 
 @layer components {
   .african-pattern {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627,25.6 Q60,20 54.627,14.4 L45.373,14.4 Q40,20 45.373,25.6 L54.627,25.6 Z M14.627,45.6 Q20,40 14.627,34.4 L5.373,34.4 Q0,40 5.373,45.6 L14.627,45.6 Z M54.627,45.6 Q60,40 54.627,34.4 L45.373,34.4 Q40,40 45.373,45.6 L54.627,45.6 Z M14.627,25.6 Q20,20 14.627,14.4 L5.373,14.4 Q0,20 5.373,25.6 L14.627,25.6 Z M30,50 Q35.373,44.4 30,38.8 Q24.627,44.4 30,50 Z M30,21.2 Q35.373,15.6 30,10 Q24.627,15.6 30,21.2 Z' fill='%239b87f5' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627,25.6 Q60,20 54.627,14.4 L45.373,14.4 Q40,20 45.373,25.6 L54.627,25.6 Z M14.627,45.6 Q20,40 14.627,34.4 L5.373,34.4 Q0,40 5.373,45.6 L14.627,45.6 Z M54.627,45.6 Q60,40 54.627,34.4 L45.373,34.4 Q40,40 45.373,45.6 L54.627,45.6 Z M14.627,25.6 Q20,20 14.627,14.4 L5.373,14.4 Q0,20 5.373,25.6 L14.627,25.6 Z M30,50 Q35.373,44.4 30,38.8 Q24.627,44.4 30,50 Z M30,21.2 Q35.373,15.6 30,10 Q24.627,15.6 30,21.2 Z' fill='%23635BFF' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
   }
   
   .clip-path-slant {
@@ -105,6 +107,27 @@
   }
 
   .glow-purple {
-    box-shadow: 0 0 15px rgba(155, 135, 245, 0.5);
+    box-shadow: 0 0 15px rgba(99, 91, 255, 0.5);
+  }
+  
+  /* Stripe-inspired UI elements */
+  .stripe-gradient {
+    background: linear-gradient(135deg, #635BFF 0%, #4B44C0 100%);
+  }
+  
+  .stripe-card {
+    @apply bg-white rounded-lg shadow-md border border-gray-100 transition-all duration-200;
+  }
+  
+  .stripe-card:hover {
+    @apply shadow-lg border-gigzam-purple/20;
+  }
+  
+  .stripe-input {
+    @apply rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gigzam-purple focus:border-transparent transition-all;
+  }
+  
+  .gigzam-logo {
+    @apply font-sans font-bold tracking-tight;
   }
 }

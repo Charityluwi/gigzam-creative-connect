@@ -5,12 +5,12 @@ import { Button } from "@/components/ui/button";
 
 const CallToAction = () => {
   return (
-    <section className="py-16 bg-gradient-to-r from-gigzam-purple/90 to-gigzam-purple-dark/90 african-pattern">
+    <section className="py-16 stripe-gradient african-pattern">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
-              Ready to Showcase Your Talent?
+            <h2 className="gigzam-logo text-3xl sm:text-4xl font-bold text-white mb-6">
+              Ready to Showcase Your Service?
             </h2>
             <p className="text-xl text-white/90 mb-8">
               Join thousands of creative professionals on Zambia's leading booking platform and grow your business.
@@ -48,7 +48,7 @@ const CallToAction = () => {
               </div>
             </div>
             
-            <Link to="/become-a-creative">
+            <Link to="/become-a-creative" onClick={() => window.scrollTo(0, 0)}>
               <Button className="bg-white text-gigzam-purple hover:bg-white/90 text-lg py-6 px-8 h-auto rounded-xl">
                 Join as a Creative <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
@@ -89,7 +89,7 @@ const CallToAction = () => {
                 Dedicated support for your event planning journey
               </li>
             </ul>
-            <Link to="/discover">
+            <Link to="/discover" onClick={() => window.scrollTo(0, 0)}>
               <Button className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-6 h-auto text-lg rounded-xl">
                 Find Talented Creatives
               </Button>

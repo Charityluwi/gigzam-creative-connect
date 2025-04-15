@@ -6,11 +6,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/label";
+import { z } from "zod";
+
+// Form validation schemas
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
+
+const registerSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  fullName: z.string().min(2, "Full name must be at least 2 characters"),
+  confirmPassword: z.string()
+});
 
 const Auth = () => {
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   
   // Get the tab parameter from the URL
@@ -21,6 +39,7 @@ const Auth = () => {
   // Login form state
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
+  const [loginErrors, setLoginErrors] = useState<Record<string, string>>({});
   
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
@@ -28,6 +47,7 @@ const Auth = () => {
   const [registerUsername, setRegisterUsername] = useState("");
   const [registerFullName, setRegisterFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [registerErrors, setRegisterErrors] = useState<Record<string, string>>({});
 
   // Update URL when tab changes
   useEffect(() => {
@@ -46,15 +66,79 @@ const Auth = () => {
     }
   }, [activeTab, location, navigate]);
 
+  const validateLoginForm = () => {
+    try {
+      loginSchema.parse({ email: loginEmail, password: loginPassword });
+      setLoginErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setLoginErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
+  const validateRegisterForm = () => {
+    try {
+      const result = registerSchema.parse({
+        email: registerEmail,
+        password: registerPassword,
+        username: registerUsername,
+        fullName: registerFullName,
+        confirmPassword
+      });
+      
+      // Check if passwords match
+      if (registerPassword !== confirmPassword) {
+        setRegisterErrors({ confirmPassword: "Passwords do not match" });
+        return false;
+      }
+      
+      setRegisterErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0].toString()] = err.message;
+          }
+        });
+        setRegisterErrors(newErrors);
+      }
+      return false;
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateLoginForm()) return;
+    
     setIsLoading(true);
     
     try {
       await signIn(loginEmail, loginPassword);
+      toast({
+        title: "Success!",
+        description: "You have successfully logged in.",
+        variant: "default",
+      });
       navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
+      toast({
+        title: "Login failed",
+        description: "Please check your credentials and try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -63,8 +147,13 @@ const Auth = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!validateRegisterForm()) return;
+    
     if (registerPassword !== confirmPassword) {
-      alert("Passwords do not match");
+      setRegisterErrors({
+        ...registerErrors,
+        confirmPassword: "Passwords do not match"
+      });
       return;
     }
     
@@ -75,22 +164,42 @@ const Auth = () => {
         username: registerUsername,
         full_name: registerFullName
       });
-      // We don't navigate automatically as the user needs to confirm their email
+      
+      toast({
+        title: "Account created!",
+        description: "Please check your email to verify your account.",
+        variant: "default",
+      });
+      
+      // Clear form after successful registration
+      setRegisterEmail("");
+      setRegisterPassword("");
+      setRegisterUsername("");
+      setRegisterFullName("");
+      setConfirmPassword("");
+      
+      // Switch to login tab
+      setActiveTab("login");
     } catch (error) {
       console.error("Registration error:", error);
+      toast({
+        title: "Registration failed",
+        description: "There was an error creating your account. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-white to-gray-100 p-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-white to-gray-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gigzam-purple mb-2">
-            Gig<span className="text-gigzam-orange">Zam</span>
+          <h1 className="gigzam-logo text-3xl font-bold text-gigzam-purple mb-2">
+            Gig<span className="text-gigzam-purple opacity-80">Zam</span>
           </h1>
-          <p className="text-gray-600">Connect with creative talent</p>
+          <p className="text-gray-600">Connect with creative services</p>
         </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -100,7 +209,7 @@ const Auth = () => {
           </TabsList>
           
           <TabsContent value="login">
-            <Card>
+            <Card className="stripe-card">
               <CardHeader>
                 <CardTitle>Welcome back</CardTitle>
                 <CardDescription>Sign in to your account</CardDescription>
@@ -108,9 +217,7 @@ const Auth = () => {
               <form onSubmit={handleLogin}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="email" className="text-sm font-medium">
-                      Email
-                    </label>
+                    <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
                       type="email"
@@ -118,13 +225,15 @@ const Auth = () => {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       required
+                      className={loginErrors.email ? "border-red-500" : ""}
                     />
+                    {loginErrors.email && (
+                      <p className="text-sm text-red-500">{loginErrors.email}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <label htmlFor="password" className="text-sm font-medium">
-                        Password
-                      </label>
+                      <Label htmlFor="password">Password</Label>
                       <a href="#" className="text-sm text-gigzam-purple hover:underline">
                         Forgot password?
                       </a>
@@ -136,7 +245,11 @@ const Auth = () => {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       required
+                      className={loginErrors.password ? "border-red-500" : ""}
                     />
+                    {loginErrors.password && (
+                      <p className="text-sm text-red-500">{loginErrors.password}</p>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -153,7 +266,7 @@ const Auth = () => {
           </TabsContent>
           
           <TabsContent value="register">
-            <Card>
+            <Card className="stripe-card">
               <CardHeader>
                 <CardTitle>Create an account</CardTitle>
                 <CardDescription>Join our creative community</CardDescription>
@@ -162,34 +275,36 @@ const Auth = () => {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label htmlFor="username" className="text-sm font-medium">
-                        Username
-                      </label>
+                      <Label htmlFor="username">Username</Label>
                       <Input
                         id="username"
                         placeholder="johndoe"
                         value={registerUsername}
                         onChange={(e) => setRegisterUsername(e.target.value)}
                         required
+                        className={registerErrors.username ? "border-red-500" : ""}
                       />
+                      {registerErrors.username && (
+                        <p className="text-sm text-red-500">{registerErrors.username}</p>
+                      )}
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="fullName" className="text-sm font-medium">
-                        Full Name
-                      </label>
+                      <Label htmlFor="fullName">Full Name</Label>
                       <Input
                         id="fullName"
                         placeholder="John Doe"
                         value={registerFullName}
                         onChange={(e) => setRegisterFullName(e.target.value)}
                         required
+                        className={registerErrors.fullName ? "border-red-500" : ""}
                       />
+                      {registerErrors.fullName && (
+                        <p className="text-sm text-red-500">{registerErrors.fullName}</p>
+                      )}
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="registerEmail" className="text-sm font-medium">
-                      Email
-                    </label>
+                    <Label htmlFor="registerEmail">Email</Label>
                     <Input
                       id="registerEmail"
                       type="email"
@@ -197,12 +312,14 @@ const Auth = () => {
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
                       required
+                      className={registerErrors.email ? "border-red-500" : ""}
                     />
+                    {registerErrors.email && (
+                      <p className="text-sm text-red-500">{registerErrors.email}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="registerPassword" className="text-sm font-medium">
-                      Password
-                    </label>
+                    <Label htmlFor="registerPassword">Password</Label>
                     <Input
                       id="registerPassword"
                       type="password"
@@ -210,12 +327,14 @@ const Auth = () => {
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
                       required
+                      className={registerErrors.password ? "border-red-500" : ""}
                     />
+                    {registerErrors.password && (
+                      <p className="text-sm text-red-500">{registerErrors.password}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="confirmPassword" className="text-sm font-medium">
-                      Confirm Password
-                    </label>
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
@@ -223,7 +342,11 @@ const Auth = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
+                      className={registerErrors.confirmPassword ? "border-red-500" : ""}
                     />
+                    {registerErrors.confirmPassword && (
+                      <p className="text-sm text-red-500">{registerErrors.confirmPassword}</p>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter>

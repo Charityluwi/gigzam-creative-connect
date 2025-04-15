@@ -8,13 +8,13 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gigzam-charcoal text-white">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center mb-4" onClick={handleScrollToTop}>
-              <span className="text-2xl font-bold text-white">
-                Gig<span className="text-gigzam-orange">Zam</span>
+              <span className="gigzam-logo text-2xl font-bold text-white">
+                Gig<span className="text-gigzam-purple opacity-80">Zam</span>
               </span>
             </Link>
             <p className="text-gray-400 mb-6 max-w-md">
@@ -41,7 +41,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link to="/discover" className="text-gray-400 hover:text-white transition-colors" onClick={handleScrollToTop}>
-                  Discover Talents
+                  Discover Services
                 </Link>
               </li>
               <li>
@@ -68,7 +68,7 @@ const Footer = () => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4">Categories</h3>
+            <h3 className="text-lg font-semibold mb-4">Service Categories</h3>
             <ul className="space-y-2">
               <li>
                 <Link to="/category/musicians" className="text-gray-400 hover:text-white transition-colors" onClick={handleScrollToTop}>
@@ -102,18 +102,18 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
             <ul className="space-y-4">
               <li className="flex items-start">
-                <MapPin className="h-5 w-5 mr-2 text-gigzam-orange" />
+                <MapPin className="h-5 w-5 mr-2 text-gigzam-purple" />
                 <span className="text-gray-400">
                   Plot 1234, Great East Road<br />
                   Lusaka, Zambia
                 </span>
               </li>
               <li className="flex items-center">
-                <Phone className="h-5 w-5 mr-2 text-gigzam-orange" />
+                <Phone className="h-5 w-5 mr-2 text-gigzam-purple" />
                 <span className="text-gray-400">+260 97 1234567</span>
               </li>
               <li className="flex items-center">
-                <Mail className="h-5 w-5 mr-2 text-gigzam-orange" />
+                <Mail className="h-5 w-5 mr-2 text-gigzam-purple" />
                 <span className="text-gray-400">info@gigzam.com</span>
               </li>
             </ul>

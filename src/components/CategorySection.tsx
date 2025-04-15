@@ -22,91 +22,91 @@ const categories = [
     id: "musician",
     name: "Musicians",
     icon: Music,
-    color: "bg-blue-100 text-blue-600",
+    color: "bg-blue-100 text-gigzam-purple",
   },
   {
     id: "mc",
     name: "MCs",
     icon: Mic,
-    color: "bg-purple-100 text-purple-600",
+    color: "bg-purple-100 text-gigzam-purple",
   },
   {
     id: "photographer",
     name: "Photographers",
     icon: Camera,
-    color: "bg-green-100 text-green-600",
+    color: "bg-green-100 text-gigzam-purple",
   },
   {
     id: "makeup",
     name: "Makeup Artists",
     icon: Brush,
-    color: "bg-pink-100 text-pink-600",
+    color: "bg-pink-100 text-gigzam-purple",
   },
   {
     id: "venue",
     name: "Venues",
     icon: Home,
-    color: "bg-amber-100 text-amber-600",
+    color: "bg-amber-100 text-gigzam-purple",
   },
   {
     id: "dj",
     name: "DJs",
     icon: Headphones,
-    color: "bg-red-100 text-red-600",
+    color: "bg-red-100 text-gigzam-purple",
   },
   {
     id: "hair",
     name: "Hair Stylists",
     icon: Scissors,
-    color: "bg-teal-100 text-teal-600",
+    color: "bg-teal-100 text-gigzam-purple",
   },
   {
     id: "decor",
     name: "Decor",
     icon: Palette,
-    color: "bg-orange-100 text-orange-600",
+    color: "bg-orange-100 text-gigzam-purple",
   },
   {
     id: "caterer",
     name: "Caterers",
     icon: ChefHat,
-    color: "bg-yellow-100 text-yellow-600",
+    color: "bg-yellow-100 text-gigzam-purple",
   },
   {
     id: "sound",
     name: "Sound Engineers",
     icon: HeadphonesIcon,
-    color: "bg-indigo-100 text-indigo-600",
+    color: "bg-indigo-100 text-gigzam-purple",
   },
   {
     id: "dancer",
     name: "Dancers",
     icon: Music, // Using Music as a stand-in for dancer
-    color: "bg-purple-100 text-purple-600",
+    color: "bg-purple-100 text-gigzam-purple",
   },
   {
     id: "car",
     name: "Car Hire",
     icon: Car,
-    color: "bg-gray-100 text-gray-600",
+    color: "bg-gray-100 text-gigzam-purple",
   },
   {
     id: "florist",
     name: "Florists",
     icon: Flower,
-    color: "bg-rose-100 text-rose-600",
+    color: "bg-rose-100 text-gigzam-purple",
   },
   {
     id: "matron",
     name: "Matrons",
     icon: Users,
-    color: "bg-sky-100 text-sky-600",
+    color: "bg-sky-100 text-gigzam-purple",
   },
   {
     id: "baker",
     name: "Bakers",
     icon: Cake,
-    color: "bg-brown-100 text-amber-800",
+    color: "bg-brown-100 text-gigzam-purple",
   },
 ];
 
@@ -115,8 +115,8 @@ const CategorySection = () => {
     <section className="py-16 bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-            Explore Popular Categories
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 gigzam-logo">
+            Explore Popular Service Categories
           </h2>
           <p className="mt-4 text-lg text-gray-600">
             Find the perfect creative professional for your next event
@@ -128,7 +128,8 @@ const CategorySection = () => {
             <Link
               key={category.id}
               to={`/search?category=${category.id}`}
-              className="group flex flex-col items-center p-4 rounded-xl transition-all duration-300 hover:shadow-md bg-white border border-gray-100 hover:border-gigzam-purple/20"
+              className="stripe-card group flex flex-col items-center p-4 rounded-xl transition-all duration-300 hover:shadow-md hover:border-gigzam-purple/20"
+              onClick={() => window.scrollTo(0, 0)}
             >
               <div className={`p-3 rounded-full ${category.color} group-hover:scale-110 transition-transform`}>
                 <category.icon className="h-6 w-6" />
