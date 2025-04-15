@@ -1,20 +1,21 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
-import { ArrowRight, Check, Info, Image, Link, X } from "lucide-react";
+import { ArrowRight, Check, Info, Image, Link as LinkIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
 
-const talentCategories = [
+const serviceCategories = [
   { id: "musician", name: "Musician" },
   { id: "dj", name: "DJ" },
   { id: "photographer", name: "Photographer" },
@@ -34,20 +35,35 @@ const talentCategories = [
   { id: "baker", name: "Baker" },
 ];
 
+const phoneRegex = /^(\+?260|0)?[79]\d{8}$/;
+const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+
 const formSchema = z.object({
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
-  phone: z.string().min(10, { message: "Please enter a valid phone number" }),
+  phone: z.string().regex(phoneRegex, { message: "Please enter a valid Zambian phone number (e.g., +260971234567 or 0971234567)" }),
   category: z.string({
-    required_error: "Please select a talent category",
+    required_error: "Please select a service category",
   }),
   bio: z.string().min(50, { message: "Bio must be at least 50 characters" }),
-  experience: z.string().min(3, { message: "Please specify your years of experience" }),
+  experience: z.string().min(1, { message: "Please specify your years of experience" })
+    .refine((val) => !isNaN(Number(val)) || val.match(/^\d+(\.\d+)?\+?$/), {
+      message: "Experience must be a number (e.g., 2 or 2.5 or 5+)",
+    }),
   website: z.string().url({ message: "Please enter a valid URL" }).optional().or(z.literal("")),
-  instagram: z.string().optional(),
+  instagram: z.string().optional()
+    .refine((val) => !val || !val.includes('@'), {
+      message: "Do not include the @ symbol",
+    }),
   facebook: z.string().optional(),
-  tiktok: z.string().optional(),
+  tiktok: z.string().optional()
+    .refine((val) => !val || !val.includes('@'), {
+      message: "Do not include the @ symbol",
+    }),
   youtube: z.string().optional(),
+  termsAccepted: z.literal(true, {
+    errorMap: () => ({ message: "You must accept the Terms and Conditions" }),
+  }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -72,6 +88,7 @@ const BecomeCreative = () => {
       facebook: "",
       tiktok: "",
       youtube: "",
+      termsAccepted: false,
     },
   });
 
@@ -80,12 +97,24 @@ const BecomeCreative = () => {
     
     const newFiles = Array.from(e.target.files);
     
+    // Validate file sizes (5MB max)
+    const invalidFiles = newFiles.filter(file => file.size > 5 * 1024 * 1024);
+    if (invalidFiles.length > 0) {
+      toast({
+        title: "File size too large",
+        description: "Some images exceed the 5MB limit and were not added.",
+        variant: "destructive",
+      });
+    }
+    
+    const validFiles = newFiles.filter(file => file.size <= 5 * 1024 * 1024);
+    
     // Limit to a maximum of 5 images
-    const combinedFiles = [...portfolioImages, ...newFiles].slice(0, 5);
+    const combinedFiles = [...portfolioImages, ...validFiles].slice(0, 5);
     setPortfolioImages(combinedFiles);
     
     // Create preview URLs for the images
-    const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+    const newPreviews = validFiles.map(file => URL.createObjectURL(file));
     const combinedPreviews = [...portfolioImagePreviews, ...newPreviews].slice(0, 5);
     setPortfolioImagePreviews(combinedPreviews);
   };
@@ -102,6 +131,15 @@ const BecomeCreative = () => {
   };
 
   function onSubmit(data: FormValues) {
+    if (portfolioImages.length === 0) {
+      toast({
+        title: "Portfolio images required",
+        description: "Please upload at least one portfolio image to showcase your work.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     // In a real implementation, we would upload the files here
@@ -189,8 +227,11 @@ const BecomeCreative = () => {
                           <FormItem>
                             <FormLabel>Phone Number</FormLabel>
                             <FormControl>
-                              <Input placeholder="Your phone number" {...field} />
+                              <Input placeholder="e.g., +260971234567" {...field} />
                             </FormControl>
+                            <FormDescription>
+                              Zambian phone number (e.g., +260971234567 or 0971234567)
+                            </FormDescription>
                             <FormMessage />
                           </FormItem>
                         )}
@@ -201,15 +242,15 @@ const BecomeCreative = () => {
                         name="category"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Talent Category</FormLabel>
+                            <FormLabel>Service Category</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select your talent category" />
+                                  <SelectValue placeholder="Select your service category" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {talentCategories.map((category) => (
+                                {serviceCategories.map((category) => (
                                   <SelectItem key={category.id} value={category.id}>
                                     {category.name}
                                   </SelectItem>
@@ -229,8 +270,11 @@ const BecomeCreative = () => {
                         <FormItem>
                           <FormLabel>Years of Experience</FormLabel>
                           <FormControl>
-                            <Input placeholder="How many years of experience do you have?" {...field} />
+                            <Input placeholder="e.g., 2, 3.5, or 5+" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Enter your years of experience as a number (e.g., 2, 3.5, or 5+)
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -250,7 +294,7 @@ const BecomeCreative = () => {
                             />
                           </FormControl>
                           <FormDescription>
-                            Include information about your services, expertise, and what makes you unique.
+                            Include information about your services, expertise, and what makes you unique. Minimum 50 characters.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
@@ -297,7 +341,7 @@ const BecomeCreative = () => {
                           )}
                         </div>
                         <p className="text-sm text-muted-foreground">
-                          Upload up to 5 images of your previous work (optional). Max 5MB per image.
+                          Upload at least one image (up to 5) of your previous work. Max 5MB per image.
                         </p>
                       </div>
                     </div>
@@ -305,7 +349,7 @@ const BecomeCreative = () => {
                     {/* Social Media Links */}
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
-                        <Link className="h-5 w-5 text-muted-foreground" />
+                        <LinkIcon className="h-5 w-5 text-muted-foreground" />
                         <h3 className="text-lg font-medium">Online Presence</h3>
                       </div>
                       
@@ -346,6 +390,9 @@ const BecomeCreative = () => {
                                   />
                                 </div>
                               </FormControl>
+                              <FormDescription>
+                                Enter your username without the @ symbol
+                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -362,6 +409,7 @@ const BecomeCreative = () => {
                               <FormControl>
                                 <Input placeholder="Username or page name" {...field} />
                               </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
@@ -384,6 +432,10 @@ const BecomeCreative = () => {
                                   />
                                 </div>
                               </FormControl>
+                              <FormDescription>
+                                Enter your username without the @ symbol
+                              </FormDescription>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
@@ -397,11 +449,34 @@ const BecomeCreative = () => {
                               <FormControl>
                                 <Input placeholder="Channel name" {...field} />
                               </FormControl>
+                              <FormMessage />
                             </FormItem>
                           )}
                         />
                       </div>
                     </div>
+                    
+                    {/* Terms and Conditions */}
+                    <FormField
+                      control={form.control}
+                      name="termsAccepted"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 py-4">
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
+                          </FormControl>
+                          <div className="space-y-1 leading-none">
+                            <FormLabel>
+                              I accept the <Link to="/terms-of-service" className="text-gigzam-purple hover:underline" target="_blank">Terms and Conditions</Link>
+                            </FormLabel>
+                            <FormMessage />
+                          </div>
+                        </FormItem>
+                      )}
+                    />
                     
                     <div className="pt-4">
                       <Button 

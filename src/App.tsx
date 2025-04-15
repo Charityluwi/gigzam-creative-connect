@@ -19,6 +19,7 @@ import HowItWorksPage from "./pages/HowItWorksPage";
 import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
+import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/how-it-works" element={<HowItWorksPage />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/profile/me" element={
               <ProtectedRoute>
