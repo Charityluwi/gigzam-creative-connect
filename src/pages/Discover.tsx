@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -5,25 +6,8 @@ import Footer from "@/components/Footer";
 import TalentCard from "@/components/TalentCard";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Music, 
-  Mic, 
-  Camera, 
-  Palette, 
-  Home, 
-  Headphones, 
-  Scissors, 
-  Brush, 
-  Heart, 
-  Star, 
-  Filter,
-  ChefHat,
-  HeadphonesIcon,
-  Car,
-  Flower,
-  Users,
-  Cake
-} from "lucide-react";
+import { Heart, Star, Filter, Loader2 } from "lucide-react";
+import { categories } from "@/components/CategorySection";
 
 const mockTalents = [
   {
@@ -124,129 +108,38 @@ const mockTalents = [
   },
   {
     id: 9,
-    name: "Nail Art by Mercy",
-    category: "nail",
+    name: "Chef Bwalya",
+    category: "caterer",
     location: "Ndola",
     rating: 4.7,
     reviews: 35,
-    price: 800,
-    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    price: 3200,
+    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
     featured: false,
     verified: true,
   },
   {
     id: 10,
-    name: "Joseph Fashions",
-    category: "designer",
+    name: "Floral Haven",
+    category: "florist",
     location: "Lusaka",
     rating: 4.9,
     reviews: 50,
-    price: 3000,
-    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+    price: 2800,
+    image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
     featured: true,
     verified: true,
-  },
-];
-
-const categories = [
-  {
-    id: "musician",
-    name: "Musicians",
-    icon: Music,
-    color: "bg-blue-100 text-blue-600",
-  },
-  {
-    id: "mc",
-    name: "MCs",
-    icon: Mic,
-    color: "bg-purple-100 text-purple-600",
-  },
-  {
-    id: "photographer",
-    name: "Photographers",
-    icon: Camera,
-    color: "bg-green-100 text-green-600",
-  },
-  {
-    id: "makeup",
-    name: "Makeup Artists",
-    icon: Brush,
-    color: "bg-pink-100 text-pink-600",
-  },
-  {
-    id: "venue",
-    name: "Venues",
-    icon: Home,
-    color: "bg-amber-100 text-amber-600",
-  },
-  {
-    id: "dj",
-    name: "DJs",
-    icon: Headphones,
-    color: "bg-red-100 text-red-600",
-  },
-  {
-    id: "hair",
-    name: "Hair Stylists",
-    icon: Scissors,
-    color: "bg-teal-100 text-teal-600",
-  },
-  {
-    id: "decor",
-    name: "Decor",
-    icon: Palette,
-    color: "bg-orange-100 text-orange-600",
-  },
-  {
-    id: "caterer",
-    name: "Caterers",
-    icon: ChefHat,
-    color: "bg-yellow-100 text-yellow-600",
-  },
-  {
-    id: "sound",
-    name: "Sound Engineers",
-    icon: HeadphonesIcon,
-    color: "bg-indigo-100 text-indigo-600",
-  },
-  {
-    id: "dancer",
-    name: "Dancers",
-    icon: Music,
-    color: "bg-purple-100 text-purple-600",
-  },
-  {
-    id: "car",
-    name: "Car Hire",
-    icon: Car,
-    color: "bg-gray-100 text-gray-600",
-  },
-  {
-    id: "florist",
-    name: "Florists",
-    icon: Flower,
-    color: "bg-rose-100 text-rose-600",
-  },
-  {
-    id: "matron",
-    name: "Matrons",
-    icon: Users,
-    color: "bg-sky-100 text-sky-600",
-  },
-  {
-    id: "baker",
-    name: "Bakers",
-    icon: Cake,
-    color: "bg-brown-100 text-amber-800",
   },
 ];
 
 const Discover = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("all");
+  const [isLoading, setIsLoading] = useState(false);
   
   const categoryParam = searchParams.get("category");
   
+  // Effect to set active tab based on URL parameter
   useState(() => {
     if (categoryParam) {
       setActiveTab(categoryParam);
@@ -259,7 +152,19 @@ const Discover = () => {
       ? mockTalents.filter(talent => talent.featured)
       : activeTab === "top-rated"
         ? [...mockTalents].sort((a, b) => b.rating - a.rating).slice(0, 6)
-        : mockTalents.filter(talent => talent.category === activeTab);
+        : activeTab === "verified"
+          ? mockTalents.filter(talent => talent.verified)
+          : activeTab === "new"
+            ? mockTalents.slice(0, 4) // Simulating new talents
+            : mockTalents.filter(talent => talent.category === activeTab);
+  
+  const handleLoadMore = () => {
+    setIsLoading(true);
+    // Simulate loading more talents
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+  };
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -339,21 +244,27 @@ const Discover = () => {
             
             <div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {filteredTalents.map(talent => (
-                  <TalentCard
-                    key={talent.id}
-                    id={talent.id.toString()}
-                    name={talent.name}
-                    category={talent.category}
-                    location={talent.location}
-                    rating={talent.rating}
-                    reviews={talent.reviews}
-                    price={`K${talent.price}`}
-                    imageUrl={talent.image}
-                    verified={talent.verified}
-                    featured={talent.featured}
-                  />
-                ))}
+                {filteredTalents.map(talent => {
+                  // Find the category to display the proper name
+                  const categoryObj = categories.find(cat => cat.id === talent.category);
+                  const categoryName = categoryObj ? categoryObj.name : talent.category;
+                  
+                  return (
+                    <TalentCard
+                      key={talent.id}
+                      id={talent.id.toString()}
+                      name={talent.name}
+                      category={categoryName}
+                      location={talent.location}
+                      rating={talent.rating}
+                      reviews={talent.reviews}
+                      price={`K${talent.price}`}
+                      imageUrl={talent.image}
+                      verified={talent.verified}
+                      featured={talent.featured}
+                    />
+                  );
+                })}
               </div>
               
               {filteredTalents.length === 0 && (
@@ -365,8 +276,13 @@ const Discover = () => {
               
               {filteredTalents.length > 0 && (
                 <div className="text-center mt-10">
-                  <Button className="bg-gigzam-purple hover:bg-gigzam-purple-dark px-8 py-2 h-auto">
-                    Load More
+                  <Button 
+                    className="bg-gigzam-purple hover:bg-gigzam-purple-dark px-8 py-2 h-auto"
+                    onClick={handleLoadMore}
+                    disabled={isLoading}
+                  >
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    {isLoading ? "Loading..." : "Load More"}
                   </Button>
                 </div>
               )}

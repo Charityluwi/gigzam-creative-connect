@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search, ChevronDown } from "lucide-react";
@@ -5,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import UserDropdown from "@/components/UserDropdown";
 import { Input } from "@/components/ui/input";
+import { categories } from "@/components/CategorySection";
+import { 
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,6 +46,10 @@ const NavBar = () => {
     setIsMenuOpen(false);
   };
 
+  // Select a subset of categories for the desktop navbar dropdown
+  const desktopCategories = categories.slice(0, 8);
+  // For mobile, we'll show all categories
+
   return (
     <nav className="bg-white/95 backdrop-blur-sm fixed w-full z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,38 +61,48 @@ const NavBar = () => {
               </span>
             </Link>
             <div className="hidden md:ml-10 md:flex md:space-x-8">
-              <div className="relative group">
-                <button className="inline-flex items-center text-gray-700 hover:text-gigzam-purple px-1 pt-1 text-sm font-medium">
-                  Service Categories
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </button>
-                <div className="absolute left-0 mt-2 w-56 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 ease-in-out z-50 bg-white rounded-md shadow-lg p-2">
-                  <Link to="/category/musician" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Musicians
-                  </Link>
-                  <Link to="/category/dj" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    DJs
-                  </Link>
-                  <Link to="/category/photographer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Photographers
-                  </Link>
-                  <Link to="/category/makeup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Makeup Artists
-                  </Link>
-                  <Link to="/category/venue" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Venues
-                  </Link>
-                  <Link to="/category/caterer" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Caterers
-                  </Link>
-                  <Link to="/category/decor" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Decor
-                  </Link>
-                  <Link to="/category/hair" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => window.scrollTo(0, 0)}>
-                    Hair Stylists
-                  </Link>
-                </div>
-              </div>
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="text-gray-700 hover:text-gigzam-purple px-1 pt-1 text-sm font-medium bg-transparent hover:bg-transparent focus:bg-transparent">
+                      Service Categories
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                        {desktopCategories.map((category) => (
+                          <li key={category.id}>
+                            <NavigationMenuLink asChild>
+                              <Link
+                                to={`/category/${category.id}`}
+                                className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gigzam-purple/10 hover:text-gigzam-purple focus:bg-accent focus:text-accent-foreground"
+                                onClick={() => window.scrollTo(0, 0)}
+                              >
+                                <div className="flex items-center">
+                                  <div className={`p-1.5 rounded-full ${category.color} mr-2`}>
+                                    <category.icon className="h-4 w-4" />
+                                  </div>
+                                  <div className="text-sm font-medium">{category.name}</div>
+                                </div>
+                              </Link>
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                        <li className="md:col-span-2">
+                          <NavigationMenuLink asChild>
+                            <Link
+                              to="/discover"
+                              className="block select-none rounded-md p-3 text-center leading-none no-underline outline-none transition-colors hover:bg-gigzam-purple/10 hover:text-gigzam-purple focus:bg-accent focus:text-accent-foreground"
+                              onClick={() => window.scrollTo(0, 0)}
+                            >
+                              <div className="text-sm font-medium">View All Categories</div>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
               <Link 
                 to="/discover" 
                 className={`${isActive('/discover') ? 'text-gigzam-purple border-b-2 border-gigzam-purple' : 'text-gray-700 hover:text-gigzam-purple'} px-1 pt-1 text-sm font-medium`}
@@ -169,30 +194,26 @@ const NavBar = () => {
                 Search
               </Button>
             </form>
-            <Link to="/category/musician" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Musicians
-            </Link>
-            <Link to="/category/dj" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              DJs
-            </Link>
-            <Link to="/category/photographer" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Photographers
-            </Link>
-            <Link to="/category/makeup" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Makeup Artists
-            </Link>
-            <Link to="/category/venue" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Venues
-            </Link>
-            <Link to="/category/caterer" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Caterers
-            </Link>
-            <Link to="/category/decor" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Decor
-            </Link>
-            <Link to="/category/hair" className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}>
-              Hair Stylists
-            </Link>
+            
+            <div className="py-2 border-b border-gray-200">
+              <h3 className="px-3 py-2 text-sm font-semibold text-gray-500">CATEGORIES</h3>
+              <div className="grid grid-cols-2 gap-1">
+                {categories.map((category) => (
+                  <Link 
+                    key={category.id}
+                    to={`/category/${category.id}`} 
+                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gigzam-purple/10 rounded-md" 
+                    onClick={() => { window.scrollTo(0, 0); setIsMenuOpen(false); }}
+                  >
+                    <div className={`p-1 rounded-full ${category.color.replace('text-gigzam-purple', '')} mr-2`}>
+                      <category.icon className="h-4 w-4 text-gigzam-purple" />
+                    </div>
+                    {category.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            
             <Link 
               to="/discover" 
               className={`block px-3 py-2 text-base font-medium ${isActive('/discover') ? 'text-gigzam-purple bg-gigzam-purple/10' : 'text-gray-700 hover:bg-gigzam-purple/10'} rounded-md`}

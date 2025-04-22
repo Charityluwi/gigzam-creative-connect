@@ -18,7 +18,8 @@ import {
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
-const categories = [
+// Creating a centralized category data structure that can be exported and used by other components
+export const categories = [
   {
     id: "musician",
     name: "Musicians",

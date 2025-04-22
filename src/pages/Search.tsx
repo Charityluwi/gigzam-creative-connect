@@ -1,3 +1,4 @@
+
 import { useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NavBar from "@/components/NavBar";
@@ -19,10 +20,8 @@ import {
 } from "@/components/ui/select";
 import {
   Slider,
-  SliderTrack,
-  SliderRange,
-  SliderThumb,
 } from "@/components/ui/slider";
+import { categories } from "@/components/CategorySection";
 
 const mockTalents = [
   {
@@ -107,45 +106,31 @@ const mockTalents = [
   },
   {
     id: 9,
-    name: "Nail Art by Mercy",
-    category: "nail",
+    name: "Chef Bwalya",
+    category: "caterer",
     location: "ndola",
     rating: 4.7,
     reviews: 35,
-    price: 800,
-    image: "https://images.unsplash.com/photo-1604654894610-df63bc536371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+    price: 3200,
+    image: "https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
   },
   {
     id: 10,
-    name: "Joseph Fashions",
-    category: "designer",
+    name: "Floral Haven",
+    category: "florist",
     location: "lusaka",
     rating: 4.9,
     reviews: 50,
-    price: 3000,
-    image: "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
+    price: 2800,
+    image: "https://images.unsplash.com/photo-1563241527-3004b7be0ffd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80",
   },
 ];
 
-const talentCategories = [
-  { id: "musician", name: "Musician" },
-  { id: "dj", name: "DJ" },
-  { id: "photographer", name: "Photographer" },
-  { id: "makeup", name: "Makeup Artist" },
-  { id: "mc", name: "MC/Host" },
-  { id: "hair", name: "Hair Stylist" },
-  { id: "nail", name: "Nail Technician" },
-  { id: "designer", name: "Designer" },
-  { id: "venue", name: "Venue" },
-  { id: "decor", name: "Decor" },
-  { id: "caterer", name: "Caterer" },
-  { id: "sound", name: "Sound Engineer" },
-  { id: "dancer", name: "Dancer" },
-  { id: "car", name: "Car Hire" },
-  { id: "florist", name: "Florist" },
-  { id: "matron", name: "Matron" },
-  { id: "baker", name: "Baker" },
-];
+// Generate talent category options from the categories array
+const talentCategories = categories.map(cat => ({
+  id: cat.id,
+  name: cat.name.replace(/s$/, ''), // Remove trailing 's' for singular form
+}));
 
 const locations = [
   "Lusaka",
@@ -168,32 +153,61 @@ const Search = () => {
   const [sortBy, setSortBy] = useState("relevance");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  // Get parameters from URL
+  const query = searchParams.get("query") || "";
   const category = searchParams.get("category") || "all-categories";
   const location = searchParams.get("location") || "all-locations";
   const dateParam = searchParams.get("date");
   const date = dateParam ? parse(dateParam, "yyyy-MM-dd", new Date()) : undefined;
+
+  // Handle category from route parameters
+  useEffect(() => {
+    const path = window.location.pathname;
+    const match = path.match(/\/category\/([^/]+)/);
+    
+    if (match && match[1]) {
+      // Update search params to include the category from the URL path
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.set("category", match[1]);
+      setSearchParams(newParams);
+    }
+  }, [window.location.pathname]);
 
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       let filteredTalents = [...mockTalents];
       
+      // Filter by query (search term)
+      if (query) {
+        const lowerQuery = query.toLowerCase();
+        filteredTalents = filteredTalents.filter(
+          (talent) => 
+            talent.name.toLowerCase().includes(lowerQuery) || 
+            talent.category.toLowerCase().includes(lowerQuery)
+        );
+      }
+      
+      // Filter by category
       if (category && category !== "all-categories") {
         filteredTalents = filteredTalents.filter(
           (talent) => talent.category === category
         );
       }
       
+      // Filter by location
       if (location && location !== "all-locations") {
         filteredTalents = filteredTalents.filter(
           (talent) => talent.location === location.toLowerCase()
         );
       }
       
+      // Filter by price range
       filteredTalents = filteredTalents.filter(
         (talent) => talent.price >= priceRange[0] && talent.price <= priceRange[1]
       );
       
+      // Sort talents
       if (sortBy === "price_low") {
         filteredTalents.sort((a, b) => a.price - b.price);
       } else if (sortBy === "price_high") {
@@ -205,7 +219,7 @@ const Search = () => {
       setTalents(filteredTalents);
       setLoading(false);
     }, 1000);
-  }, [category, location, date, priceRange, sortBy]);
+  }, [category, location, date, priceRange, sortBy, query]);
 
   const updateFilters = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams.toString());
@@ -231,6 +245,7 @@ const Search = () => {
     setPriceRange(value);
   };
 
+  // Get category name for display
   const categoryName = category && category !== "all-categories"
     ? talentCategories.find(c => c.id === category)?.name 
     : "All Categories";
@@ -242,6 +257,7 @@ const Search = () => {
         <div className="bg-gigzam-purple-dark text-white py-6">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <h1 className="text-2xl font-bold mb-4">
+              {query ? `Search results for "${query}"` : ''}
               {talents.length} {categoryName} found {location !== "all-locations" ? `in ${location}` : ""} 
               {date ? ` for ${format(date, "PPP")}` : ""}
             </h1>
@@ -256,7 +272,7 @@ const Search = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all-categories">All Categories</SelectItem>
-                  {talentCategories.map((cat) => (
+                  {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>
                       {cat.name}
                     </SelectItem>
@@ -361,19 +377,25 @@ const Search = () => {
             </div>
           ) : talents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {talents.map((talent) => (
-                <TalentCard 
-                  key={talent.id}
-                  id={talent.id.toString()}
-                  name={talent.name}
-                  category={talentCategories.find(c => c.id === talent.category)?.name || talent.category}
-                  location={locations.find(l => l.toLowerCase() === talent.location) || talent.location}
-                  rating={talent.rating}
-                  reviews={talent.reviews}
-                  price={`K${talent.price}`}
-                  imageUrl={talent.image}
-                />
-              ))}
+              {talents.map((talent) => {
+                // Find the category object to get proper display name
+                const categoryObj = categories.find(c => c.id === talent.category);
+                const categoryDisplayName = categoryObj ? categoryObj.name : talent.category;
+                
+                return (
+                  <TalentCard 
+                    key={talent.id}
+                    id={talent.id.toString()}
+                    name={talent.name}
+                    category={categoryDisplayName}
+                    location={locations.find(l => l.toLowerCase() === talent.location) || talent.location}
+                    rating={talent.rating}
+                    reviews={talent.reviews}
+                    price={`K${talent.price}`}
+                    imageUrl={talent.image}
+                  />
+                );
+              })}
             </div>
           ) : (
             <div className="text-center py-16">
