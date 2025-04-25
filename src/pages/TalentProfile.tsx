@@ -1,9 +1,22 @@
+
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Calendar as CalendarIcon, MapPin, Star, Clock, Check, Award, ChevronRight, ChevronLeft, Heart, Share, Info } from "lucide-react";
+import { 
+  Calendar as CalendarIcon, 
+  MapPin, 
+  Star, 
+  Clock, 
+  Check, 
+  Award, 
+  ChevronRight, 
+  ChevronLeft, 
+  Heart, 
+  Share, 
+  Info 
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -109,6 +122,7 @@ const TalentProfile = () => {
   const [currentImage, setCurrentImage] = useState(0);
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [activeTab, setActiveTab] = useState("about");
 
   const talent = mockTalent;
 
@@ -160,6 +174,11 @@ const TalentProfile = () => {
     setShowShareDialog(true);
   };
 
+  // Handle tab change
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
@@ -201,7 +220,7 @@ const TalentProfile = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <Tabs defaultValue="about">
+              <Tabs defaultValue="about" value={activeTab} onValueChange={handleTabChange}>
                 <TabsList className="w-full mb-6">
                   <TabsTrigger value="about" className="flex-1">About</TabsTrigger>
                   <TabsTrigger value="portfolio" className="flex-1">Portfolio</TabsTrigger>
@@ -220,7 +239,7 @@ const TalentProfile = () => {
                       {talent.packages.map((pkg) => (
                         <div 
                           key={pkg.id} 
-                          className={`border p-4 rounded-lg transition-shadow ${pkg.id === selectedPackage ? 'border-gigzam-purple shadow-md' : 'border-gray-200'}`}
+                          className={`border p-4 rounded-lg transition-shadow cursor-pointer ${pkg.id === selectedPackage ? 'border-gigzam-purple shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
                           onClick={() => setSelectedPackage(pkg.id)}
                         >
                           <div className="flex items-start justify-between">
@@ -251,7 +270,10 @@ const TalentProfile = () => {
                             <Button 
                               variant={pkg.id === selectedPackage ? "default" : "outline"}
                               className={pkg.id === selectedPackage ? "bg-gigzam-purple hover:bg-gigzam-purple-dark" : ""}
-                              onClick={() => setSelectedPackage(pkg.id)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPackage(pkg.id);
+                              }}
                             >
                               {pkg.id === selectedPackage ? "Selected" : "Select"}
                             </Button>
@@ -285,12 +307,14 @@ const TalentProfile = () => {
                       <button 
                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
                         onClick={handlePrevImage}
+                        aria-label="Previous image"
                       >
                         <ChevronLeft className="h-6 w-6" />
                       </button>
                       <button 
                         className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
                         onClick={handleNextImage}
+                        aria-label="Next image"
                       >
                         <ChevronRight className="h-6 w-6" />
                       </button>
@@ -301,9 +325,10 @@ const TalentProfile = () => {
                         <button
                           key={index}
                           className={`h-16 rounded-md overflow-hidden border-2 ${
-                            currentImage === index ? "border-gigzam-purple" : "border-transparent"
+                            currentImage === index ? "border-gigzam-purple" : "border-transparent hover:border-gray-300"
                           }`}
                           onClick={() => setCurrentImage(index)}
+                          aria-label={`View portfolio item ${index + 1}`}
                         >
                           <img 
                             src={item.type === "image" ? item.url : item.thumbnail} 
@@ -444,7 +469,10 @@ const TalentProfile = () => {
                   </Popover>
                 </div>
                 
-                <Button className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark mb-4" onClick={handleBookNow}>
+                <Button 
+                  className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark mb-4" 
+                  onClick={handleBookNow}
+                >
                   Book Now
                 </Button>
                 
