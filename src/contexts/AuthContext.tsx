@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session, AuthError } from "@supabase/supabase-js";
@@ -31,7 +30,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [mfaChallenge, setMfaChallenge] = useState<MfaChallenge | null>(null);
 
   useEffect(() => {
-    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log("Auth state changed:", event);
@@ -39,7 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Handle MFA challenge events
         if (event === "MFA_CHALLENGE_VERIFIED") {
           setMfaChallenge(null);
         } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
@@ -60,7 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     );
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -112,9 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (error) throw error;
       
-      // Check if MFA is required for the user
       if (data.session && data.user && data.user.factors) {
-        // Handle MFA flow if needed
         console.log("User factors:", data.user.factors);
       }
     } catch (error: any) {
@@ -133,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     
     try {
-      const { error } = await supabase.auth.mfa.challengeAndVerify({
+      const { error } = await supabase.auth.mfa.verify({
         factorId: mfaChallenge.factorId,
         challengeId: mfaChallenge.id,
         code
@@ -141,7 +135,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       
       if (error) throw error;
       
-      // Reset MFA challenge on success
       setMfaChallenge(null);
     } catch (error) {
       if (error instanceof AuthError) {

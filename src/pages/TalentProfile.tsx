@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -26,6 +26,7 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import ShareTalentDialog from "@/components/ShareTalentDialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const mockTalent = {
   id: "1",
@@ -123,9 +124,9 @@ const TalentProfile = () => {
   const [showShareDialog, setShowShareDialog] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
+  const mainContentRef = useRef<HTMLDivElement>(null);
 
   const talent = mockTalent;
-
   const packageDetails = talent.packages.find(pkg => pkg.id === selectedPackage);
 
   const handlePrevImage = () => {
@@ -174,15 +175,24 @@ const TalentProfile = () => {
     setShowShareDialog(true);
   };
 
-  // Handle tab change
+  // Handle tab change with scroll to top
   const handleTabChange = (value: string) => {
     setActiveTab(value);
+    // Scroll to the top of the main content
+    if (mainContentRef.current) {
+      mainContentRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Handle category click - navigate to top of page
+  const handleCategoryClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
-      <main className="flex-grow pt-16">
+      <main className="flex-grow pt-16" ref={mainContentRef}>
         <div className="relative h-64 md:h-80 bg-gigzam-purple-dark">
           <div className="absolute inset-0 bg-gradient-to-r from-gigzam-purple/70 to-gigzam-purple-dark/90"></div>
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative h-full flex items-end pb-10">
@@ -208,7 +218,10 @@ const TalentProfile = () => {
                   </span>
                 </div>
                 <div className="flex items-center mt-2">
-                  <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm">
+                  <span 
+                    className="bg-white/20 text-white px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-white/30 transition-colors"
+                    onClick={handleCategoryClick}
+                  >
                     {talent.category}
                   </span>
                 </div>
@@ -220,7 +233,7 @@ const TalentProfile = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <Tabs defaultValue="about" value={activeTab} onValueChange={handleTabChange}>
+              <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                 <TabsList className="w-full mb-6">
                   <TabsTrigger value="about" className="flex-1">About</TabsTrigger>
                   <TabsTrigger value="portfolio" className="flex-1">Portfolio</TabsTrigger>
@@ -289,15 +302,15 @@ const TalentProfile = () => {
                     <h2 className="text-xl font-semibold mb-4">Portfolio</h2>
                     
                     <div className="relative mb-4 rounded-lg overflow-hidden h-80 bg-black">
-                      {talent.portfolio[currentImage].type === "image" ? (
+                      {talent.portfolio[currentImage]?.type === "image" ? (
                         <img 
-                          src={talent.portfolio[currentImage].url} 
+                          src={talent.portfolio[currentImage]?.url} 
                           alt="Portfolio" 
                           className="w-full h-full object-contain"
                         />
                       ) : (
                         <iframe 
-                          src={talent.portfolio[currentImage].url} 
+                          src={talent.portfolio[currentImage]?.url} 
                           className="w-full h-full" 
                           title="Video portfolio"
                           allowFullScreen
@@ -308,6 +321,7 @@ const TalentProfile = () => {
                         className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
                         onClick={handlePrevImage}
                         aria-label="Previous image"
+                        type="button"
                       >
                         <ChevronLeft className="h-6 w-6" />
                       </button>
@@ -315,6 +329,7 @@ const TalentProfile = () => {
                         className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
                         onClick={handleNextImage}
                         aria-label="Next image"
+                        type="button"
                       >
                         <ChevronRight className="h-6 w-6" />
                       </button>
@@ -324,6 +339,7 @@ const TalentProfile = () => {
                       {talent.portfolio.map((item, index) => (
                         <button
                           key={index}
+                          type="button"
                           className={`h-16 rounded-md overflow-hidden border-2 ${
                             currentImage === index ? "border-gigzam-purple" : "border-transparent hover:border-gray-300"
                           }`}
@@ -331,7 +347,7 @@ const TalentProfile = () => {
                           aria-label={`View portfolio item ${index + 1}`}
                         >
                           <img 
-                            src={item.type === "image" ? item.url : item.thumbnail} 
+                            src={item.type === "image" ? item.url : (item.thumbnail || item.url)} 
                             alt={`Portfolio ${index + 1}`}
                             className="w-full h-full object-cover"
                           />
@@ -388,29 +404,35 @@ const TalentProfile = () => {
                     </div>
                     
                     <div className="space-y-6">
-                      {talent.reviewList.map((review) => (
-                        <div key={review.id} className="pb-6 border-b border-gray-200 last:border-0">
-                          <div className="flex justify-between">
-                            <div>
-                              <h3 className="font-medium">{review.user}</h3>
-                              <p className="text-gray-500 text-sm">{review.date}</p>
+                      {talent.reviewList.length > 0 ? (
+                        talent.reviewList.map((review) => (
+                          <div key={review.id} className="pb-6 border-b border-gray-200 last:border-0">
+                            <div className="flex justify-between">
+                              <div>
+                                <h3 className="font-medium">{review.user}</h3>
+                                <p className="text-gray-500 text-sm">{review.date}</p>
+                              </div>
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star 
+                                    key={i} 
+                                    className={`h-4 w-4 ${
+                                      i < review.rating 
+                                        ? "text-yellow-400 fill-yellow-400" 
+                                        : "text-gray-300"
+                                    }`} 
+                                  />
+                                ))}
+                              </div>
                             </div>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <Star 
-                                  key={i} 
-                                  className={`h-4 w-4 ${
-                                    i < review.rating 
-                                      ? "text-yellow-400 fill-yellow-400" 
-                                      : "text-gray-300"
-                                  }`} 
-                                />
-                              ))}
-                            </div>
+                            <p className="mt-2 text-gray-700">{review.comment}</p>
                           </div>
-                          <p className="mt-2 text-gray-700">{review.comment}</p>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <p>No reviews yet</p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 </TabsContent>
