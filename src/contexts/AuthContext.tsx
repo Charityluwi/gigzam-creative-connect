@@ -40,12 +40,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(session?.user ?? null);
         
         // Handle MFA challenge events
-        if (event === 'MFA_CHALLENGE_INITIATED') {
-          setMfaChallenge({
-            id: session?.auth?.challenge?.id || "",
-            factorId: session?.auth?.challenge?.factor_id || ""
-          });
-        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (event === "MFA_CHALLENGE_VERIFIED") {
+          setMfaChallenge(null);
+        } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
           setMfaChallenge(null);
         }
         
@@ -108,14 +105,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
       
-      // MFA challenge will be handled by the onAuthStateChange listener
+      // Check if MFA is required for the user
+      if (data.session && data.user && data.user.factors) {
+        // Handle MFA flow if needed
+        console.log("User factors:", data.user.factors);
+      }
     } catch (error: any) {
       toast({
         title: "Sign in failed",
@@ -134,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({
         factorId: mfaChallenge.factorId,
-        challengeId: mfaChallenge.id,
+        challenge: mfaChallenge.id,
         code
       });
       
@@ -171,13 +172,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   
   const verifyMfa = async (code: string): Promise<boolean> => {
     try {
-      const { error } = await supabase.auth.mfa.challenge({
-        factorId: 'totp', // This should be dynamically determined in a production app
-        code
+      const { data, error } = await supabase.auth.mfa.challenge({
+        factorId: 'totp'
       });
       
       if (error) throw error;
-      return true;
+      
+      if (data.id) {
+        const { error: verifyError } = await supabase.auth.mfa.verify({
+          factorId: 'totp',
+          challenge: data.id,
+          code
+        });
+        
+        if (verifyError) throw verifyError;
+        return true;
+      }
+      
+      return false;
     } catch (error: any) {
       toast({
         title: "Verification failed",
