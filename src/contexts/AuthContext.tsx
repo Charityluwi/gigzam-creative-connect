@@ -135,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({
         factorId: mfaChallenge.factorId,
-        challenge: mfaChallenge.id,
+        challengeId: mfaChallenge.id,
         code
       });
       
@@ -181,7 +181,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.id) {
         const { error: verifyError } = await supabase.auth.mfa.verify({
           factorId: 'totp',
-          challenge: data.id,
+          challengeId: data.id,
           code
         });
         
