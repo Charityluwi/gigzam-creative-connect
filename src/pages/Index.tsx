@@ -10,9 +10,18 @@ import CallToAction from "@/components/CallToAction";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  // Scroll to top when the page loads
+  // Ensure smooth scrolling and scroll to top when the page loads
   useEffect(() => {
+    // Smooth scroll behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Scroll to top
     window.scrollTo(0, 0);
+    
+    // Cleanup
+    return () => {
+      document.documentElement.style.scrollBehavior = 'auto';
+    };
   }, []);
 
   return (

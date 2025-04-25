@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
+
+// Page imports
 import Index from "./pages/Index";
 import Search from "./pages/Search";
 import Discover from "./pages/Discover";
@@ -21,13 +23,15 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import TermsOfService from "./pages/TermsOfService";
 
-// Set up QueryClient with retries and caching
+// Set up QueryClient with production-ready configuration
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: 1,
+      retry: 2,
       staleTime: 1000 * 60 * 5, // 5 minutes
-      refetchOnWindowFocus: false,
+      cacheTime: 1000 * 60 * 30, // 30 minutes
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
     },
   },
 });
@@ -69,10 +73,8 @@ const App = () => (
                 <Profile />
               </ProtectedRoute>
             } />
-            {/* Redirect old paths to new ones if needed */}
             <Route path="/login" element={<Navigate to="/auth?tab=login" replace />} />
             <Route path="/register" element={<Navigate to="/auth?tab=register" replace />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

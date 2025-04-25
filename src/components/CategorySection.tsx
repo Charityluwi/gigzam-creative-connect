@@ -13,7 +13,8 @@ import {
   Car,
   Flower,
   Users,
-  Cake
+  Cake,
+  PersonStanding
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -83,7 +84,7 @@ export const categories = [
   {
     id: "dancer",
     name: "Dancers",
-    icon: Music, // Using Music as a stand-in for dancer
+    icon: PersonStanding,
     color: "bg-purple-100 text-gigzam-purple",
   },
   {
@@ -147,7 +148,7 @@ const CategorySection = () => {
       </motion.div>
 
       <motion.div 
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 px-4 sm:px-6 lg:px-8"
         variants={container}
         initial="hidden"
         whileInView="show"
@@ -163,7 +164,7 @@ const CategorySection = () => {
               <div className={`p-3 rounded-full ${category.color} group-hover:scale-110 transition-transform`}>
                 <category.icon className="h-6 w-6" />
               </div>
-              <h3 className="mt-3 text-gray-800 group-hover:text-gigzam-purple text-sm font-medium">
+              <h3 className="mt-3 text-gray-800 group-hover:text-gigzam-purple text-sm font-medium text-center">
                 {category.name}
               </h3>
             </Link>
