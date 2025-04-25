@@ -22,6 +22,7 @@ import Contact from "./pages/Contact";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import TermsOfService from "./pages/TermsOfService";
+import SecuritySettings from "./pages/SecuritySettings";
 
 // Set up QueryClient with production-ready configuration
 const queryClient = new QueryClient({
@@ -71,6 +72,11 @@ const App = () => (
             <Route path="/profile/me" element={
               <ProtectedRoute>
                 <Profile />
+              </ProtectedRoute>
+            } />
+            <Route path="/settings/security" element={
+              <ProtectedRoute>
+                <SecuritySettings />
               </ProtectedRoute>
             } />
             <Route path="/login" element={<Navigate to="/auth?tab=login" replace />} />

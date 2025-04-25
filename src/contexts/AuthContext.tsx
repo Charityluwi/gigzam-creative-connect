@@ -1,16 +1,25 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { User, Session } from "@supabase/supabase-js";
+import { User, Session, AuthError } from "@supabase/supabase-js";
 import { toast } from "@/hooks/use-toast";
+
+interface MfaChallenge {
+  id: string;
+  factorId: string;
+}
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  mfaChallenge: MfaChallenge | null;
   signUp: (email: string, password: string, metadata?: { username?: string; full_name?: string }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  completeMfaChallenge: (code: string) => Promise<void>;
+  setupMfa: () => Promise<string | null>;
+  verifyMfa: (code: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,13 +28,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [mfaChallenge, setMfaChallenge] = useState<MfaChallenge | null>(null);
 
   useEffect(() => {
     // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
+        console.log("Auth state changed:", event);
+        
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // Handle MFA challenge events
+        if (event === 'MFA_CHALLENGE_INITIATED') {
+          setMfaChallenge({
+            id: session?.auth?.challenge?.id || "",
+            factorId: session?.auth?.challenge?.factor_id || ""
+          });
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          setMfaChallenge(null);
+        }
         
         if (event === 'SIGNED_IN') {
           toast({
@@ -63,7 +85,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email,
         password,
         options: {
-          data: metadata
+          data: metadata,
+          emailRedirectTo: `${window.location.origin}/auth?tab=login`
         }
       });
 
@@ -91,6 +114,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (error) throw error;
+      
+      // MFA challenge will be handled by the onAuthStateChange listener
     } catch (error: any) {
       toast({
         title: "Sign in failed",
@@ -98,6 +123,68 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         variant: "destructive",
       });
       throw error;
+    }
+  };
+
+  const completeMfaChallenge = async (code: string) => {
+    if (!mfaChallenge) {
+      throw new Error("No active MFA challenge");
+    }
+    
+    try {
+      const { error } = await supabase.auth.mfa.challengeAndVerify({
+        factorId: mfaChallenge.factorId,
+        challengeId: mfaChallenge.id,
+        code
+      });
+      
+      if (error) throw error;
+      
+      // Reset MFA challenge on success
+      setMfaChallenge(null);
+    } catch (error) {
+      if (error instanceof AuthError) {
+        throw new Error(error.message);
+      }
+      throw new Error("Failed to verify the code. Please try again.");
+    }
+  };
+  
+  const setupMfa = async (): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.auth.mfa.enroll({
+        factorType: 'totp'
+      });
+      
+      if (error) throw error;
+      
+      return data.totp.qr_code;
+    } catch (error: any) {
+      toast({
+        title: "MFA setup failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return null;
+    }
+  };
+  
+  const verifyMfa = async (code: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase.auth.mfa.challenge({
+        factorId: 'totp', // This should be dynamically determined in a production app
+        code
+      });
+      
+      if (error) throw error;
+      return true;
+    } catch (error: any) {
+      toast({
+        title: "Verification failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      return false;
     }
   };
 
@@ -116,7 +203,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      loading, 
+      mfaChallenge,
+      signUp, 
+      signIn, 
+      signOut,
+      completeMfaChallenge,
+      setupMfa,
+      verifyMfa
+    }}>
       {children}
     </AuthContext.Provider>
   );
