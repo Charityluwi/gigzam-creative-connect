@@ -1,4 +1,3 @@
-
 import React from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -89,13 +88,16 @@ const About = () => {
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-5">Celebrating Local Talent</h3>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  We started GigZam with a simple mission: to showcase the incredible creative talent in Zambia and make it easier for people to discover and book them.
+                  We started GigZam with a simple mission: to spotlight Zambia's incredible creative talent and make it easier for people to discover and book them.
                 </p>
                 <p className="text-gray-600 mb-6 leading-relaxed">
-                  Our founder, a musician himself, was frustrated by the challenges creative professionals faced in finding consistent work and building their client base. At the same time, event organizers were struggling to find reliable, high-quality talent for their events.
+                  Our founder, Charity Cholwe Mutumwenu, a seasoned wedding planner, experienced firsthand the frustration of trying to find reliable, high-quality creatives, whether makeup artists, photographers, MCs, or photographers, for her events. At the same time, many talented professionals were struggling to get consistent bookings and grow their brands.
                 </p>
                 <p className="text-gray-600 leading-relaxed">
-                  GigZam was created to bridge this gap, providing a platform where talent could showcase their work and clients could easily find and book the perfect professional for their needs. Today, we're proud to be Zambia's largest creative booking platform.
+                  GigZam was born to bridge this gap, a platform where creatives can showcase their work and clients can effortlessly find and book the right talent for any occasion.
+                </p>
+                <p className="text-gray-600 leading-relaxed">
+                  Today, we're proud to be Zambia's creative booking platform, helping bring events to life and supporting the people who make them unforgettable.
                 </p>
               </div>
             </div>
@@ -170,10 +172,10 @@ const About = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 {
-                  name: "Chanda Mutale",
+                  name: "Charity Mutumwenu",
                   role: "Founder & CEO",
                   image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-                  bio: "Former musician with a passion for digital innovation and the creative economy."
+                  bio: "Former wedding planner with a passion for digital innovation and the creative economy."
                 },
                 {
                   name: "Thandi Mbewe",
