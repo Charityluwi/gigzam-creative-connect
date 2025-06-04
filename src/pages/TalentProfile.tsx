@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -27,6 +26,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import ShareTalentDialog from "@/components/ShareTalentDialog";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import AvailabilityCalendar from "@/components/AvailabilityCalendar";
 
 const mockTalent = {
   id: "1",
@@ -238,6 +238,7 @@ const TalentProfile = () => {
                   <TabsTrigger value="about" className="flex-1">About</TabsTrigger>
                   <TabsTrigger value="portfolio" className="flex-1">Portfolio</TabsTrigger>
                   <TabsTrigger value="reviews" className="flex-1">Reviews</TabsTrigger>
+                  <TabsTrigger value="availability" className="flex-1">Availability</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="about" className="space-y-6">
@@ -434,6 +435,15 @@ const TalentProfile = () => {
                         </div>
                       )}
                     </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="availability" className="space-y-6">
+                  <div className="bg-white p-6 rounded-lg shadow-sm">
+                    <AvailabilityCalendar 
+                      userId={talent.id} 
+                      isOwner={false}
+                    />
                   </div>
                 </TabsContent>
               </Tabs>
