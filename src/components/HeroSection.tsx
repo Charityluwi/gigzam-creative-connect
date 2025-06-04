@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Search, MapPin, Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { validateForm, ValidationRules } from "@/utils/validation";
+import { useToast } from "@/hooks/use-toast";
 
 const serviceCategories = [
   { id: "musician", name: "Musician" },
@@ -68,16 +69,56 @@ const HeroSection = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSearch = () => {
-    const searchParams = new URLSearchParams();
-    if (selectedCategory) searchParams.append("category", selectedCategory);
-    if (selectedLocation) searchParams.append("location", selectedLocation);
-    if (date) searchParams.append("date", format(date, "yyyy-MM-dd"));
-    
-    navigate(`/search?${searchParams.toString()}`);
-    window.scrollTo(0, 0);
+  const validationRules: ValidationRules = {
+    category: { required: true },
+    location: { required: true }
+  };
+
+  const handleSearch = async () => {
+    try {
+      setIsSearching(true);
+      setErrors({});
+
+      const formData = {
+        category: selectedCategory,
+        location: selectedLocation,
+        date: date ? format(date, "yyyy-MM-dd") : ""
+      };
+
+      const validationErrors = validateForm(formData, validationRules);
+      
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        toast({
+          title: "Search Error",
+          description: "Please fill in all required fields",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const searchParams = new URLSearchParams();
+      if (selectedCategory) searchParams.append("category", selectedCategory);
+      if (selectedLocation) searchParams.append("location", selectedLocation);
+      if (date) searchParams.append("date", format(date, "yyyy-MM-dd"));
+      
+      navigate(`/search?${searchParams.toString()}`);
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error('Search error:', error);
+      toast({
+        title: "Search Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   return (
@@ -120,7 +161,10 @@ const HeroSection = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="relative">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-full pl-9 text-left h-[42px] bg-white">
+                  <SelectTrigger className={cn(
+                    "w-full pl-9 text-left h-[42px] bg-white",
+                    errors.category && "border-red-500"
+                  )}>
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <SelectValue placeholder="What service do you need?" />
                   </SelectTrigger>
@@ -134,11 +178,17 @@ const HeroSection = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+                {errors.category && (
+                  <p className="text-red-500 text-xs mt-1">{errors.category}</p>
+                )}
               </div>
               
               <div className="relative">
                 <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                  <SelectTrigger className="w-full pl-9 text-left h-[42px] bg-white">
+                  <SelectTrigger className={cn(
+                    "w-full pl-9 text-left h-[42px] bg-white",
+                    errors.location && "border-red-500"
+                  )}>
                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                     <SelectValue placeholder="Where? (City, Area)" />
                   </SelectTrigger>
@@ -152,6 +202,9 @@ const HeroSection = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+                {errors.location && (
+                  <p className="text-red-500 text-xs mt-1">{errors.location}</p>
+                )}
               </div>
               
               <div className="relative">
@@ -183,9 +236,14 @@ const HeroSection = () => {
             <div className="mt-5">
               <Button 
                 onClick={handleSearch}
-                className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg rounded-md shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01]"
+                disabled={isSearching}
+                className="w-full bg-gigzam-purple hover:bg-gigzam-purple-dark text-white py-3 h-auto text-lg rounded-md shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-[1.01] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Find Services <ArrowRight className="ml-2 h-5 w-5" />
+                {isSearching ? (
+                  <>Finding Services...</>
+                ) : (
+                  <>Find Services <ArrowRight className="ml-2 h-5 w-5" /></>
+                )}
               </Button>
             </div>
           </motion.div>

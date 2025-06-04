@@ -3,6 +3,9 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import TalentCard from "./TalentCard";
 import { Button } from "@/components/ui/button";
+import LoadingWrapper from "./LoadingWrapper";
+import { useLazyLoad } from "@/hooks/useLazyLoad";
+import { useState, useEffect } from "react";
 
 // Sample data for featured talents
 const featuredTalents = [
@@ -57,8 +60,28 @@ const featuredTalents = [
 ];
 
 const FeaturedTalents = () => {
+  const { elementRef, isVisible } = useLazyLoad({ threshold: 0.1 });
+  const [isLoading, setIsLoading] = useState(false);
+  const [talents, setTalents] = useState<typeof featuredTalents>([]);
+
+  useEffect(() => {
+    if (isVisible && talents.length === 0) {
+      setIsLoading(true);
+      // Simulate API call
+      const timer = setTimeout(() => {
+        setTalents(featuredTalents);
+        setIsLoading(false);
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isVisible, talents.length]);
+
   return (
-    <section className="py-16">
+    <section 
+      ref={elementRef as React.RefObject<HTMLElement>}
+      className="py-16"
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center mb-10">
           <div>
@@ -76,11 +99,13 @@ const FeaturedTalents = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredTalents.map((talent) => (
-            <TalentCard key={talent.id} {...talent} />
-          ))}
-        </div>
+        <LoadingWrapper isLoading={isLoading} loadingText="Loading featured services...">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {talents.map((talent) => (
+              <TalentCard key={talent.id} {...talent} />
+            ))}
+          </div>
+        </LoadingWrapper>
       </div>
     </section>
   );
