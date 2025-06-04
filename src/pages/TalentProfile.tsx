@@ -14,7 +14,8 @@ import {
   ChevronLeft, 
   Heart, 
   Share, 
-  Info 
+  Info,
+  Play
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "@/components/ui/calendar";
@@ -135,6 +136,10 @@ const TalentProfile = () => {
 
   const handleNextImage = () => {
     setCurrentImage(prev => (prev === talent.portfolio.length - 1 ? 0 : prev + 1));
+  };
+
+  const handleThumbnailClick = (index: number) => {
+    setCurrentImage(index);
   };
 
   const handleDateSelect = (date: Date | undefined) => {
@@ -310,42 +315,43 @@ const TalentProfile = () => {
                           className="w-full h-full object-contain"
                         />
                       ) : (
-                        <iframe 
-                          src={talent.portfolio[currentImage]?.url} 
-                          className="w-full h-full" 
-                          title="Video portfolio"
-                          allowFullScreen
-                        ></iframe>
+                        <div className="relative w-full h-full">
+                          <iframe 
+                            src={talent.portfolio[currentImage]?.url} 
+                            className="w-full h-full" 
+                            title="Video portfolio"
+                            allowFullScreen
+                          />
+                        </div>
                       )}
                       
-                      <button 
-                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 h-10 w-10 rounded-full text-white border-0"
                         onClick={handlePrevImage}
-                        aria-label="Previous image"
-                        type="button"
                       >
                         <ChevronLeft className="h-6 w-6" />
-                      </button>
-                      <button 
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 p-2 rounded-full text-white"
+                      </Button>
+                      
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 h-10 w-10 rounded-full text-white border-0"
                         onClick={handleNextImage}
-                        aria-label="Next image"
-                        type="button"
                       >
                         <ChevronRight className="h-6 w-6" />
-                      </button>
+                      </Button>
                     </div>
                     
                     <div className="grid grid-cols-4 gap-2">
                       {talent.portfolio.map((item, index) => (
-                        <button
+                        <div
                           key={index}
-                          type="button"
-                          className={`h-16 rounded-md overflow-hidden border-2 ${
+                          className={`relative h-16 rounded-md overflow-hidden border-2 cursor-pointer transition-all duration-200 ${
                             currentImage === index ? "border-gigzam-purple" : "border-transparent hover:border-gray-300"
                           }`}
-                          onClick={() => setCurrentImage(index)}
-                          aria-label={`View portfolio item ${index + 1}`}
+                          onClick={() => handleThumbnailClick(index)}
                         >
                           <img 
                             src={item.type === "image" ? item.url : (item.thumbnail || item.url)} 
@@ -353,13 +359,13 @@ const TalentProfile = () => {
                             className="w-full h-full object-cover"
                           />
                           {item.type === "video" && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="bg-black/50 rounded-full p-1">
-                                <ChevronRight className="h-4 w-4 text-white" />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                              <div className="bg-black/70 rounded-full p-1">
+                                <Play className="h-3 w-3 text-white fill-white" />
                               </div>
                             </div>
                           )}
-                        </button>
+                        </div>
                       ))}
                     </div>
                   </div>
