@@ -106,7 +106,7 @@ const HowItWorksPage = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Pay & Enjoy</h3>
                 <p className="text-gray-600 mb-4">
-                  Securely pay through our platform. Your payment is held safely until after the service is completed to your satisfaction.
+                  When you book a creative, you'll make a secure payment through our platform. The funds are held safely until the service is completed.
                 </p>
                 <ul className="space-y-2">
                   <li className="flex items-start">
@@ -235,6 +235,10 @@ const HowItWorksPage = () => {
                   {
                     question: "How does payment work?",
                     answer: "When you book a creative, you'll make a secure payment through our platform. The funds are held safely until the service is completed. Once you confirm that the service was provided satisfactorily, the payment is released to the creative."
+                  },
+                  {
+                    question: "What happens if a creative does not show up?",
+                    answer: "Please contact our support team immediately so we can investigate and assist you in real-time. Depending on the circumstances, you may be eligible for a full refund or a replacement creative, if one is available and acceptable to you. We take no-shows seriously, and any creative who fails to honor a confirmed booking without a valid reason may face suspension or removal from our platform."
                   },
                   {
                     question: "How do I join GigZam as a creative?",
