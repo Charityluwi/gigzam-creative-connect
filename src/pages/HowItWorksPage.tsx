@@ -1,12 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
 import HowItWorks from "@/components/HowItWorks";
-import { ArrowRight, CheckCircle, Calendar, CreditCard, Search, Users, Star, Sparkles, Crown, Zap } from "lucide-react";
+import { ArrowRight, CheckCircle, Calendar, CreditCard, Search, Users, Star, Sparkles, Crown, Zap, Gift, Clock, HeadphonesIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const HowItWorksPage = () => {
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+
+  const tiers = [
+    {
+      id: "rookie",
+      emoji: "⭐",
+      name: "Rookie Star",
+      bookings: "1–5 bookings",
+      benefits: ["Welcome badge", "Access to basic support"],
+      icon: Star,
+      color: "from-yellow-400 to-yellow-600"
+    },
+    {
+      id: "rising",
+      emoji: "🌠",
+      name: "Rising Light",
+      bookings: "5–10 bookings",
+      benefits: ["5% discount on all bookings", "Early access to select creatives", "Priority email support"],
+      icon: Sparkles,
+      color: "from-blue-400 to-blue-600"
+    },
+    {
+      id: "shining",
+      emoji: "✨",
+      name: "Shining Talent",
+      bookings: "10–20 bookings",
+      benefits: ["10% discount on all bookings", "Extended booking window", "Monthly newsletter with exclusive tips"],
+      icon: Sparkles,
+      color: "from-purple-400 to-purple-600"
+    },
+    {
+      id: "royalty",
+      emoji: "🌟",
+      name: "Creative Royalty",
+      bookings: "20–30 bookings",
+      benefits: ["15% discount on all bookings", "VIP support with dedicated line", "Exclusive access to premium creatives", "Free booking modifications"],
+      icon: Crown,
+      color: "from-orange-400 to-orange-600"
+    },
+    {
+      id: "galaxy",
+      emoji: "🌌",
+      name: "Galaxy Elite",
+      bookings: "31+ bookings",
+      benefits: ["20% discount on all bookings", "Priority booking (book before others)", "Quarterly loyalty box with exclusive gifts", "Personal account manager", "Free cancellation up to 24 hours"],
+      icon: Crown,
+      color: "from-purple-600 to-indigo-700"
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
@@ -38,303 +91,313 @@ const HowItWorksPage = () => {
           </div>
         </section>
 
-        {/* Main Steps Section */}
-        <HowItWorks />
-
-        {/* For Clients Section */}
+        {/* Tabs Section */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">For Clients</h2>
-              <p className="text-lg text-gray-600">
-                Discover how GigZam helps you find the perfect talent for your event or project.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Search className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Search & Browse</h3>
-                <p className="text-gray-600 mb-4">
-                  Use our powerful search tools to find exactly the type of talent you need. Filter by category, location, price range, and more.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Verified profiles with ratings</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Browse portfolios and samples</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Compare talent side by side</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-purple-100 text-purple-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Calendar className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">2. Book & Schedule</h3>
-                <p className="text-gray-600 mb-4">
-                  Once you've found the perfect talent, booking is simple. Check availability, select your date, and make your request.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Real-time availability calendar</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Clear pricing with no hidden fees</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Direct communication with talent</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <CreditCard className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Pay & Enjoy</h3>
-                <p className="text-gray-600 mb-4">
-                  When you book a creative, you'll make a secure payment through our platform. The funds are held safely until the service is completed.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Secure payment processing</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Money-back guarantee</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Rate and review after service</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+            <Tabs defaultValue="how-it-works" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 max-w-md mx-auto mb-12">
+                <TabsTrigger value="how-it-works">How It Works</TabsTrigger>
+                <TabsTrigger value="loyalty-program">StarBook Program</TabsTrigger>
+              </TabsList>
 
-        {/* For Creatives Section */}
-        <section className="py-20 bg-gray-50">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto text-center mb-16">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">For Creatives</h2>
-              <p className="text-lg text-gray-600">
-                Discover how GigZam helps you showcase your talents and find new clients.
-              </p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-orange-100 text-orange-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Users className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Create Your Profile</h3>
-                <p className="text-gray-600 mb-4">
-                  Build a professional profile that showcases your talents, experience, and portfolio to potential clients.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Custom portfolio showcase</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Highlight your skills and experience</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Set your rates and availability</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-purple-100 text-purple-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Calendar className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">2. Receive Bookings</h3>
-                <p className="text-gray-600 mb-4">
-                  Get booking requests from clients and manage your schedule easily through our platform.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Instant booking notifications</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Calendar management tools</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Negotiate terms with clients</span>
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <CreditCard className="h-8 w-8" />
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Get Paid</h3>
-                <p className="text-gray-600 mb-4">
-                  Receive secure payments directly to your account after completing your gigs.
-                </p>
-                <ul className="space-y-2">
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Fast payment processing</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Multiple payout options</span>
-                  </li>
-                  <li className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
-                    <span className="text-gray-600">Clear payment history</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
+              <TabsContent value="how-it-works" className="space-y-20">
+                {/* Main Steps Section */}
+                <HowItWorks />
 
-        {/* StarBook Loyalty Program Section */}
-        <section className="py-20 bg-gradient-to-br from-gigzam-purple/5 via-purple-50 to-gigzam-purple/10">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto text-center mb-12">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-gigzam-purple to-purple-600 rounded-full mb-6">
-                <Star className="h-8 w-8 text-white" />
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
-                StarBook Loyalty Program
-              </h2>
-              <p className="text-lg text-gray-600 mb-8">
-                Welcome to the StarBook Loyalty Program, our way of saying <em>thank you</em> for supporting top creative talent.
-              </p>
-              <p className="text-lg text-gray-600 mb-12">
-                As you book more creatives, you'll rise through 5 exciting tiers:
-              </p>
-            </div>
-
-            <div className="max-w-5xl mx-auto">
-              <div className="grid md:grid-cols-5 gap-6 mb-12">
-                {/* Rookie Star */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all hover:scale-105">
-                  <div className="text-center">
-                    <div className="text-3xl mb-3">⭐</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Rookie Star</h3>
-                    <p className="text-sm text-gray-600">1–5 bookings</p>
-                  </div>
-                </div>
-
-                {/* Rising Light */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all hover:scale-105">
-                  <div className="text-center">
-                    <div className="text-3xl mb-3">🌠</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Rising Light</h3>
-                    <p className="text-sm text-gray-600">5–10 bookings</p>
-                  </div>
-                </div>
-
-                {/* Shining Talent */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all hover:scale-105">
-                  <div className="text-center">
-                    <div className="text-3xl mb-3">✨</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Shining Talent</h3>
-                    <p className="text-sm text-gray-600">10–20 bookings</p>
-                  </div>
-                </div>
-
-                {/* Creative Royalty */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all hover:scale-105">
-                  <div className="text-center">
-                    <div className="text-3xl mb-3">🌟</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Creative Royalty</h3>
-                    <p className="text-sm text-gray-600">20–30 bookings</p>
-                  </div>
-                </div>
-
-                {/* Galaxy Elite */}
-                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all hover:scale-105">
-                  <div className="text-center">
-                    <div className="text-3xl mb-3">🌌</div>
-                    <h3 className="font-semibold text-gray-900 mb-2">Galaxy Elite</h3>
-                    <p className="text-sm text-gray-600">31+ bookings</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Benefits */}
-              <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
-                  Each tier comes with amazing perks
-                </h3>
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div className="text-center">
-                    <div className="bg-green-100 text-green-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Zap className="h-6 w-6" />
+                {/* For Clients Section */}
+                <section className="bg-white">
+                  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-3xl mx-auto text-center mb-16">
+                      <h2 className="text-3xl font-bold text-gray-900 mb-4">For Clients</h2>
+                      <p className="text-lg text-gray-600">
+                        Discover how GigZam helps you find the perfect talent for your event or project.
+                      </p>
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Exclusive Discounts</h4>
-                    <p className="text-gray-600 text-sm">Save more on every booking</p>
-                  </div>
-                  
-                  <div className="text-center">
-                    <div className="bg-blue-100 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Calendar className="h-6 w-6" />
+                    <div className="grid md:grid-cols-3 gap-8">
+                      <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                          <Search className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Search & Browse</h3>
+                        <p className="text-gray-600 mb-4">
+                          Use our powerful search tools to find exactly the type of talent you need. Filter by category, location, price range, and more.
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Verified profiles with ratings</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Browse portfolios and samples</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Compare talent side by side</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-purple-100 text-purple-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                          <Calendar className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">2. Book & Schedule</h3>
+                        <p className="text-gray-600 mb-4">
+                          Once you've found the perfect talent, booking is simple. Check availability, select your date, and make your request.
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Real-time availability calendar</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Clear pricing with no hidden fees</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Direct communication with talent</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                          <CreditCard className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Pay & Enjoy</h3>
+                        <p className="text-gray-600 mb-4">
+                          When you book a creative, you'll make a secure payment through our platform. The funds are held safely until the service is completed.
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Secure payment processing</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Money-back guarantee</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Rate and review after service</span>
+                          </li>
+                        </ul>
+                      </div>
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Early Access</h4>
-                    <p className="text-gray-600 text-sm">Book in-demand creatives first</p>
                   </div>
-                  
-                  <div className="text-center">
-                    <div className="bg-purple-100 text-purple-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Sparkles className="h-6 w-6" />
+                </section>
+
+                {/* For Creatives Section */}
+                <section className="bg-gray-50">
+                  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-3xl mx-auto text-center mb-16">
+                      <h2 className="text-3xl font-bold text-gray-900 mb-4">For Creatives</h2>
+                      <p className="text-lg text-gray-600">
+                        Discover how GigZam helps you showcase your talents and find new clients.
+                      </p>
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Surprise Rewards</h4>
-                    <p className="text-gray-600 text-sm">Unexpected bonuses and gifts</p>
+                    <div className="grid md:grid-cols-3 gap-8">
+                      <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-orange-100 text-orange-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                          <Users className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Create Your Profile</h3>
+                        <p className="text-gray-600 mb-4">
+                          Build a professional profile that showcases your talents, experience, and portfolio to potential clients.
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Custom portfolio showcase</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Highlight your skills and experience</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Set your rates and availability</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-purple-100 text-purple-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                          <Calendar className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">2. Receive Bookings</h3>
+                        <p className="text-gray-600 mb-4">
+                          Get booking requests from clients and manage your schedule easily through our platform.
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Instant booking notifications</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Calendar management tools</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Negotiate terms with clients</span>
+                          </li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div className="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mb-6">
+                          <CreditCard className="h-8 w-8" />
+                        </div>
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Get Paid</h3>
+                        <p className="text-gray-600 mb-4">
+                          Receive secure payments directly to your account after completing your gigs.
+                        </p>
+                        <ul className="space-y-2">
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Fast payment processing</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Multiple payout options</span>
+                          </li>
+                          <li className="flex items-start">
+                            <CheckCircle className="h-5 w-5 text-gigzam-purple mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-gray-600">Clear payment history</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
-                  
-                  <div className="text-center">
-                    <div className="bg-orange-100 text-orange-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Crown className="h-6 w-6" />
+                </section>
+              </TabsContent>
+
+              <TabsContent value="loyalty-program" className="space-y-12">
+                {/* StarBook Loyalty Program Section */}
+                <div className="max-w-4xl mx-auto text-center mb-12">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-gigzam-purple to-purple-600 rounded-full mb-6">
+                    <Star className="h-8 w-8 text-white" />
+                  </div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                    StarBook Loyalty Program
+                  </h2>
+                  <p className="text-lg text-gray-600 mb-8">
+                    Welcome to the StarBook Loyalty Program, our way of saying <em>thank you</em> for supporting top creative talent.
+                  </p>
+                  <p className="text-lg text-gray-600 mb-12">
+                    As you book more creatives, you'll rise through 5 exciting tiers. Click on each tier to see the benefits:
+                  </p>
+                </div>
+
+                {/* Interactive Tiers */}
+                <div className="max-w-6xl mx-auto">
+                  <div className="grid md:grid-cols-5 gap-6 mb-12">
+                    {tiers.map((tier) => (
+                      <Card 
+                        key={tier.id}
+                        className={`cursor-pointer transition-all hover:scale-105 hover:shadow-lg ${
+                          selectedTier === tier.id ? 'ring-2 ring-gigzam-purple shadow-lg' : ''
+                        }`}
+                        onClick={() => setSelectedTier(selectedTier === tier.id ? null : tier.id)}
+                      >
+                        <CardHeader className="text-center pb-4">
+                          <div className="text-4xl mb-3">{tier.emoji}</div>
+                          <CardTitle className="text-lg">{tier.name}</CardTitle>
+                          <CardDescription className="text-sm">{tier.bookings}</CardDescription>
+                        </CardHeader>
+                      </Card>
+                    ))}
+                  </div>
+
+                  {/* Benefits Display */}
+                  {selectedTier && (
+                    <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 mb-12">
+                      {(() => {
+                        const tier = tiers.find(t => t.id === selectedTier);
+                        if (!tier) return null;
+                        
+                        return (
+                          <div className="text-center">
+                            <div className="text-5xl mb-4">{tier.emoji}</div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">{tier.name}</h3>
+                            <p className="text-gray-600 mb-6">{tier.bookings}</p>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {tier.benefits.map((benefit, index) => (
+                                <div key={index} className="flex items-center justify-center bg-gray-50 rounded-lg p-4">
+                                  <CheckCircle className="h-5 w-5 text-gigzam-purple mr-3 flex-shrink-0" />
+                                  <span className="text-gray-700 text-center">{benefit}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })()}
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-2">VIP Support</h4>
-                    <p className="text-gray-600 text-sm">Priority customer service</p>
+                  )}
+
+                  {/* General Benefits Overview */}
+                  <div className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 mb-12">
+                    <h3 className="text-2xl font-bold text-gray-900 text-center mb-8">
+                      All tiers come with amazing perks
+                    </h3>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      <div className="text-center">
+                        <div className="bg-green-100 text-green-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Zap className="h-6 w-6" />
+                        </div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Exclusive Discounts</h4>
+                        <p className="text-gray-600 text-sm">Save more on every booking</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-blue-100 text-blue-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Clock className="h-6 w-6" />
+                        </div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Early Access</h4>
+                        <p className="text-gray-600 text-sm">Book in-demand creatives first</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-purple-100 text-purple-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Gift className="h-6 w-6" />
+                        </div>
+                        <h4 className="font-semibold text-gray-900 mb-2">Surprise Rewards</h4>
+                        <p className="text-gray-600 text-sm">Unexpected bonuses and gifts</p>
+                      </div>
+                      
+                      <div className="text-center">
+                        <div className="bg-orange-100 text-orange-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <HeadphonesIcon className="h-6 w-6" />
+                        </div>
+                        <h4 className="font-semibold text-gray-900 mb-2">VIP Support</h4>
+                        <p className="text-gray-600 text-sm">Priority customer service</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Call to Action */}
+                  <div className="text-center">
+                    <p className="text-lg text-gray-700 mb-6">
+                      👉 Start booking now to climb the ranks and unlock your next reward!
+                    </p>
+                    <Link to="/discover">
+                      <Button className="bg-gigzam-purple hover:bg-gigzam-purple-dark text-white px-8 py-3 text-lg">
+                        Start Your Journey
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      </Button>
+                    </Link>
                   </div>
                 </div>
-              </div>
-
-              {/* Call to Action */}
-              <div className="text-center mt-12">
-                <p className="text-lg text-gray-700 mb-6">
-                  👉 Start booking now to climb the ranks and unlock your next reward!
-                </p>
-                <Link to="/discover">
-                  <Button className="bg-gigzam-purple hover:bg-gigzam-purple-dark text-white px-8 py-3 text-lg">
-                    Start Your Journey
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
