@@ -1,3 +1,4 @@
+
 import React from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -172,16 +173,16 @@ const About = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 {
-                  name: "Charity Mutumwenu",
+                  name: "Charity Cholwe Mutumwenu",
                   role: "Founder & CEO",
                   image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
-                  bio: "Former wedding planner with a passion for digital innovation and the creative economy."
+                  bio: "Seasoned wedding planner and Brand and Communications specialist with a passion for digital innovation and creative economy."
                 },
                 {
-                  name: "Thandi Mbewe",
+                  name: "Kusiyo Mutumwenu",
                   role: "Chief Operations Officer",
                   image: "https://images.unsplash.com/photo-1581992652564-44c42f5ad3ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
-                  bio: "Event management expert with over 10 years of experience in the industry."
+                  bio: "Procurement and supply chain management expert. Known for streamlining operations, optimizing resource allocation, and driving efficiency."
                 },
                 {
                   name: "David Phiri",
