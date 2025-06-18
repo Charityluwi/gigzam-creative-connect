@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -14,6 +13,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from "@/hooks/use-toast";
+import CreativeLocationField from "@/components/CreativeLocationField";
 
 const serviceCategories = [
   { id: "musician", name: "Musician" },
@@ -43,6 +43,7 @@ const formSchema = z.object({
   fullName: z.string().min(3, { message: "Full name must be at least 3 characters" }),
   email: z.string().email({ message: "Please enter a valid email address" }),
   phone: z.string().regex(phoneRegex, { message: "Please enter a valid Zambian phone number (e.g., +260971234567 or 0971234567)" }),
+  location: z.string().min(3, { message: "Please specify your location" }),
   category: z.string({
     required_error: "Please select a service category",
   }),
@@ -86,6 +87,7 @@ const BecomeCreative = () => {
       fullName: "",
       email: "",
       phone: "",
+      location: "",
       category: "",
       otherCategory: "",
       bio: "",
@@ -258,51 +260,68 @@ const BecomeCreative = () => {
                         )}
                       />
                       
-                      <div className="space-y-6">
+                      <FormField
+                        control={form.control}
+                        name="location"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <CreativeLocationField
+                                value={field.value}
+                                onChange={field.onChange}
+                                error={form.formState.errors.location?.message}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Service Category</FormLabel>
+                            <Select onValueChange={handleCategoryChange} defaultValue={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select your service category" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {serviceCategories.map((category) => (
+                                  <SelectItem key={category.id} value={category.id}>
+                                    {category.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      {showOtherCategory && (
                         <FormField
                           control={form.control}
-                          name="category"
+                          name="otherCategory"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Service Category</FormLabel>
-                              <Select onValueChange={handleCategoryChange} defaultValue={field.value}>
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="Select your service category" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {serviceCategories.map((category) => (
-                                    <SelectItem key={category.id} value={category.id}>
-                                      {category.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
+                              <FormLabel>Specify Your Service Category</FormLabel>
+                              <FormControl>
+                                <Input 
+                                  placeholder="Your specific service category" 
+                                  {...field} 
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
                         />
-                        
-                        {showOtherCategory && (
-                          <FormField
-                            control={form.control}
-                            name="otherCategory"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Specify Your Service Category</FormLabel>
-                                <FormControl>
-                                  <Input 
-                                    placeholder="Your specific service category" 
-                                    {...field} 
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        )}
-                      </div>
+                      )}
                     </div>
                     
                     <FormField
