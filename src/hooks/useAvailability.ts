@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
 
-export type AvailabilityStatus = 'available' | 'partially_booked' | 'fully_booked';
+export type AvailabilityStatus = 'available' | 'fully_booked';
 
 export interface AvailabilityData {
   id: string;

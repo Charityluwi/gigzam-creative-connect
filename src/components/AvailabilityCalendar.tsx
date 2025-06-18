@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { format, parseISO } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { useAvailability, AvailabilityStatus } from '@/hooks/useAvailability';
-import { CalendarCheck, CalendarX, CalendarClock, Edit3 } from 'lucide-react';
+import { CalendarCheck, CalendarX } from 'lucide-react';
 import LoadingWrapper from '@/components/LoadingWrapper';
 
 interface AvailabilityCalendarProps {
@@ -39,8 +39,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     switch (status) {
       case 'available':
         return 'bg-green-100 text-green-800 border-green-200';
-      case 'partially_booked':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'fully_booked':
         return 'bg-red-100 text-red-800 border-red-200';
       default:
@@ -52,8 +50,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     switch (status) {
       case 'available':
         return <CalendarCheck className="h-3 w-3" />;
-      case 'partially_booked':
-        return <CalendarClock className="h-3 w-3" />;
       case 'fully_booked':
         return <CalendarX className="h-3 w-3" />;
       default:
@@ -65,8 +61,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     switch (status) {
       case 'available':
         return 'Available';
-      case 'partially_booked':
-        return 'Partially Booked';
       case 'fully_booked':
         return 'Fully Booked';
       default:
@@ -111,9 +105,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
     available: availability
       .filter(item => item.status === 'available')
       .map(item => parseISO(item.date)),
-    partially_booked: availability
-      .filter(item => item.status === 'partially_booked')
-      .map(item => parseISO(item.date)),
     fully_booked: availability
       .filter(item => item.status === 'fully_booked')
       .map(item => parseISO(item.date)),
@@ -121,7 +112,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
 
   const modifiersClassNames = {
     available: 'bg-green-100 text-green-900 hover:bg-green-200',
-    partially_booked: 'bg-yellow-100 text-yellow-900 hover:bg-yellow-200',
     fully_booked: 'bg-red-100 text-red-900 hover:bg-red-200',
   };
 
@@ -143,10 +133,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
           <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
             <CalendarCheck className="h-3 w-3 mr-1" />
             Available
-          </Badge>
-          <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
-            <CalendarClock className="h-3 w-3 mr-1" />
-            Partially Booked
           </Badge>
           <Badge variant="outline" className="bg-red-100 text-red-800 border-red-200">
             <CalendarX className="h-3 w-3 mr-1" />
@@ -187,12 +173,6 @@ const AvailabilityCalendar: React.FC<AvailabilityCalendarProps> = ({
                         <div className="flex items-center">
                           <CalendarCheck className="h-4 w-4 mr-2 text-green-600" />
                           Available
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="partially_booked">
-                        <div className="flex items-center">
-                          <CalendarClock className="h-4 w-4 mr-2 text-yellow-600" />
-                          Partially Booked
                         </div>
                       </SelectItem>
                       <SelectItem value="fully_booked">

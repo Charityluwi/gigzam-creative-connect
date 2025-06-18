@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -14,6 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
+import LoyaltyStatus from "@/components/LoyaltyStatus";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 // Mock bookings data
 const mockBookings = [
@@ -94,6 +96,17 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [ratingDialog, setRatingDialog] = useState<string | null>(null);
   const [rating, setRating] = useState(0);
+  const [userId, setUserId] = useState<string>('');
+  
+  useEffect(() => {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+      }
+    };
+    getUser();
+  }, []);
   
   const handleRateBooking = (bookingId: string) => {
     // In a real app, this would submit the rating to an API
@@ -134,6 +147,13 @@ const Dashboard = () => {
         </div>
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Add Loyalty Status Card */}
+          {userId && (
+            <div className="mb-8">
+              <LoyaltyStatus userId={userId} />
+            </div>
+          )}
+          
           <Tabs defaultValue="bookings">
             <TabsList className="w-full max-w-md mx-auto mb-8">
               <TabsTrigger value="bookings" className="flex-1">My Bookings</TabsTrigger>
