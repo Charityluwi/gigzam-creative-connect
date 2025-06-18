@@ -1,4 +1,3 @@
-
 import React from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/Footer";
@@ -71,7 +70,7 @@ const About = () => {
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold text-gray-900 mb-4">Our Story</h2>
               <p className="text-lg text-gray-600">
-                Founded in 2023, GigZam was born from a vision to transform how creative talents are discovered and booked in Zambia.
+                GigZam was born from a vision to transform how creative talents are discovered and booked in Zambia.
               </p>
             </div>
             <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -180,7 +179,7 @@ const About = () => {
                 },
                 {
                   name: "Kusiyo Mutumwenu",
-                  role: "Chief Operations Officer",
+                  role: "Chief Operating Officer",
                   image: "https://images.unsplash.com/photo-1581992652564-44c42f5ad3ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
                   bio: "Procurement and supply chain management expert. Known for streamlining operations, optimizing resource allocation, and driving efficiency."
                 },

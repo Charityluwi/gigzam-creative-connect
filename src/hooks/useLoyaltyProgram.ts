@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
@@ -46,9 +45,7 @@ export const loyaltyTiers: Record<LoyaltyTier, LoyaltyTierInfo> = {
     maxBookings: 80,
     benefits: [
       '15% discount on all bookings',
-      'VIP event invitations',
       'Free cancellation within 24 hours',
-      'Monthly talent showcase access',
       'Yearly loyalty box'
     ],
     color: 'text-gold-600',
@@ -61,10 +58,8 @@ export const loyaltyTiers: Record<LoyaltyTier, LoyaltyTierInfo> = {
     benefits: [
       '20% discount on all bookings',
       'Exclusive access to premium creatives',
-      'Chief Operating Officer direct line',
       'Yearly loyalty box',
-      'Custom event planning assistance',
-      'Lifetime membership benefits'
+      'Custom event planning assistance'
     ],
     color: 'text-indigo-600',
     bgColor: 'bg-indigo-50'

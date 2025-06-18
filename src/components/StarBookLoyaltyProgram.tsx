@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,9 +38,7 @@ const StarBookLoyaltyProgram = () => {
       badgeColor: "bg-yellow-100 text-yellow-800",
       benefits: [
         "15% discount on all bookings",
-        "VIP event invitations",
         "Free cancellation within 24 hours",
-        "Monthly talent showcase access",
         "Yearly loyalty box"
       ]
     },
@@ -54,10 +51,8 @@ const StarBookLoyaltyProgram = () => {
       benefits: [
         "20% discount on all bookings",
         "Exclusive access to premium creatives",
-        "Chief Operating Officer direct line",
         "Yearly loyalty box",
-        "Custom event planning assistance",
-        "Lifetime membership benefits"
+        "Custom event planning assistance"
       ]
     }
   ];
