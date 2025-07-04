@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import NavBar from "@/components/NavBar";
@@ -29,7 +30,6 @@ const serviceCategories = [
   { id: "caterer", name: "Caterer" },
   { id: "sound", name: "Sound Engineer" },
   { id: "dancer", name: "Dancer" },
-  { id: "car", name: "Car Hire" },
   { id: "florist", name: "Florist" },
   { id: "matron", name: "Matron" },
   { id: "baker", name: "Baker" },
