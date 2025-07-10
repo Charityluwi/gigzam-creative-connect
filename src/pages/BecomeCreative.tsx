@@ -29,7 +29,6 @@ const serviceCategories = [
   { id: "decor", name: "Decor" },
   { id: "caterer", name: "Caterer" },
   { id: "sound", name: "Sound Engineer" },
-  { id: "dancer", name: "Dancer" },
   { id: "florist", name: "Florist" },
   { id: "matron", name: "Matron" },
   { id: "baker", name: "Baker" },

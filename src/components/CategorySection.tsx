@@ -10,7 +10,6 @@ import {
   Brush,
   ChefHat,
   HeadphonesIcon,
-  Car,
   Flower,
   Users,
   Cake,
@@ -86,12 +85,6 @@ export const categories = [
     name: "Dancers",
     icon: PersonStanding,
     color: "bg-purple-100 text-gigzam-purple",
-  },
-  {
-    id: "car",
-    name: "Car Hire",
-    icon: Car,
-    color: "bg-gray-100 text-gigzam-purple",
   },
   {
     id: "florist",
