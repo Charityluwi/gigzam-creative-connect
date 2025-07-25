@@ -172,7 +172,7 @@ const About = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {[
                 {
-                  name: "Charity Cholwe Mutumwenu",
+                  name: "Charity Cholwe",
                   role: "Founder & CEO",
                   image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80",
                   bio: "Seasoned wedding planner and Brand and Communications specialist with a passion for digital innovation and creative economy."
