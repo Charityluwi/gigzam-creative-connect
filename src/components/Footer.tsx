@@ -95,6 +95,11 @@ const Footer = () => {
                   Venues
                 </Link>
               </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <ul className="space-y-4">
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 mr-2 text-gigzam-purple" />
@@ -139,5 +144,3 @@ const Footer = () => {
 };
 
 export default Footer;
-  )
-}
